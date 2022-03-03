@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:nya_mobile/analysis_setup.dart';
 
 void main() {
   runApp(const NyaApp());
@@ -14,38 +17,72 @@ class NyaApp extends StatelessWidget {
       theme: ThemeData(
 
       ),
-      home: _CounterPage(),
+      home: const _MainPage(),
     );
   }
 }
 
-class _CounterPage extends StatefulWidget {
-
-  @override
-  State createState() => _CounterPageState();
-}
-
-class _CounterPageState extends State<_CounterPage> {
-  var _counter = 0;
+class _MainPage extends StatelessWidget {
+  const _MainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldPage(
       content: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Button(child: const Text("Увеличить"), onPressed: () => {
-                setState(() {
-                  _counter++;
-                })
-              }),
-              Text("$_counter"),
-            ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: AnalysisSetup(
+            config: _analysisConfig,
+            onDone: (config) {
+              log(config.params.toString());
+            },
           ),
         ),
       ),
     );
   }
 }
+
+
+const _analysisConfig = ConfigGroup(
+  displayName: "",
+  isRoot: true,
+  children: [
+    ConfigGroup(
+      displayName: "Токсичность",
+      children: [
+        ConfigSelection(
+          displayName: "Модель",
+          name: "toxic_model",
+          options: [
+            "Random constant",
+            "RuBert by sismetanin",
+            "Russian toxicity classifier by SkolkovoInstitute",
+          ],
+        ),
+      ],
+    ),
+    ConfigGroup(
+      displayName: "Эмоциональность",
+      children: [
+        ConfigSelection(
+          displayName: "Модель",
+          name: "emotions_model",
+          options: [
+            "Random constant",
+            "RuBert by blanchefort",
+          ],
+        ),
+      ],
+    ),
+    ConfigGroup(
+      displayName: "Саркастичность",
+      children: [],
+    ),
+    ConfigGroup(
+      displayName: "Дополнительные параметры",
+      children: [],
+    ),
+  ],
+);
+
