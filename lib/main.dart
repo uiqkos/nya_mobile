@@ -2,9 +2,19 @@ import 'dart:developer';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:nya_mobile/analysis_setup.dart';
+import 'package:nya_mobile/models/nya_settings_model.dart';
+import 'package:nya_mobile/prefs.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const NyaApp());
+void main() async {
+  await NyaSettingsModel.init();
+
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<NyaSettingsModel>(create: (context) => NyaSettingsModel()),
+    ],
+    child: const NyaApp(),)
+  );
 }
 
 class NyaApp extends StatelessWidget {
