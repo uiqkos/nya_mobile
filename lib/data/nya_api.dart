@@ -32,12 +32,12 @@ class NyaApi {
     if (page != null) params['page'] = page;
     if (perPage != null) params['perPage'] = perPage;
 
-    var json = await getJson('predict', params: params);
+    var json = await _getJson('predict', params: params);
     return (json['items'] as List).map((e) => NyaComment.fromJson(e)).toList();
   }
 
   Future<List<NyaModel>> models() async {
-    return (await getJson('models') as List).map((e) => NyaModel.fromJson(e)).toList();
+    return (await _getJson('models') as List).map((e) => NyaModel.fromJson(e)).toList();
   }
 }
 
