@@ -15,6 +15,8 @@ dependencies:
   fluent_ui:
     git: https://github.com/bdlukaa/fluent_ui.git
 
+  shared_preferences: ^2.0.13
+
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
