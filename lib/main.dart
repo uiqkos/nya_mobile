@@ -1,5 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:nya_mobile/settings_ui.dart';
+import 'package:nya_mobile/pages/nya_settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -19,55 +19,10 @@ class NyaApp extends StatelessWidget {
       theme: ThemeData(
 
       ),
-      home: const _MainPage(),
-    );
-  }
-}
-
-class _MainPage extends StatelessWidget {
-  const _MainPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ScaffoldPage(
-      content: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Container(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                SettingsGroup(
-                  displayName: "Группа 1",
-                  children: [
-                    StringSetting(
-                      name: "text",
-                      displayName: "Текст",
-                    ),
-                  ],
-                ),
-                SettingsGroup(
-                  displayName: "Группа 2",
-                  children: [
-                    SelectionSetting(
-                      name: "selection",
-                      displayName: "Выбор",
-                      options: ["Один", "Два", "Три"],
-                      defaultValue: "Один",
-                    ),
-                    ToggleSetting(
-                      name: "toggle",
-                      displayName: "Опция",
-                      defaultValue: true,
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+      initialRoute: '/settings',
+      routes: {
+        '/settings': (context) => const NyaSettingsPage(),
+      }
     );
   }
 }
