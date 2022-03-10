@@ -76,10 +76,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "8cc158f42aa2d24f71e436563141d6500e2d9271"
+      resolved-ref: "5989734567e1da47923f05d435b0c386229b81d4"
       url: "https://github.com/bdlukaa/fluent_ui.git"
     source: git
-    version: "3.9.0"
+    version: "3.9.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -102,6 +102,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  http:
+    dependency: "direct main"
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.4"
+  http_parser:
+    dependency: transitive
+    description:
+      name: http_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
   intl:
     dependency: transitive
     description:
