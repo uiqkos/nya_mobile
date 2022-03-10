@@ -7,6 +7,54 @@ void initSharedPrefs(SharedPreferences sharedPrefs) {
   _sharedPrefs = sharedPrefs;
 }
 
+class NyaSettingsPage extends StatelessWidget {
+  const NyaSettingsPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldPage(
+      content: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                SettingsGroup(
+                  displayName: "Группа 1",
+                  children: [
+                    StringSetting(
+                      name: "text",
+                      displayName: "Текст",
+                    ),
+                  ],
+                ),
+                SettingsGroup(
+                  displayName: "Группа 2",
+                  children: [
+                    SelectionSetting(
+                      name: "selection",
+                      displayName: "Выбор",
+                      options: ["Один", "Два", "Три"],
+                      defaultValue: "Один",
+                    ),
+                    ToggleSetting(
+                      name: "toggle",
+                      displayName: "Опция",
+                      defaultValue: true,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 abstract class SettingWidget extends StatefulWidget {
   const SettingWidget();
 }
