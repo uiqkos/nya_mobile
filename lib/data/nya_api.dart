@@ -7,7 +7,7 @@ class NyaApi {
 
   NyaApi(String uri) : base = Uri.parse(uri);
 
-  Future<dynamic> getJson(String postfix,
+  Future<dynamic> _getJson(String postfix,
       {Map<String, dynamic> params = const {}}) async {
     var response = (await http.get(Uri(
           scheme: base.scheme,
