@@ -1,9 +1,11 @@
-import 'dart:developer';
-
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:nya_mobile/analysis_setup.dart';
+import 'package:nya_mobile/settings_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  initSharedPrefs(await SharedPreferences.getInstance());
+
   runApp(const NyaApp());
 }
 
@@ -31,58 +33,42 @@ class _MainPage extends StatelessWidget {
       content: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: AnalysisSetup(
-            config: _analysisConfig,
-            onDone: (config) {
-              log(config.params.toString());
-            },
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                SettingsGroup(
+                  displayName: "Группа 1",
+                  children: [
+                    StringSetting(
+                      name: "text",
+                      displayName: "Текст",
+                    ),
+                  ],
+                ),
+                SettingsGroup(
+                  displayName: "Группа 2",
+                  children: [
+                    SelectionSetting(
+                      name: "selection",
+                      displayName: "Выбор",
+                      options: ["Один", "Два", "Три"],
+                      defaultValue: "Один",
+                    ),
+                    ToggleSetting(
+                      name: "toggle",
+                      displayName: "Опция",
+                      defaultValue: true,
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-
-const _analysisConfig = ConfigGroup(
-  displayName: "",
-  isRoot: true,
-  children: [
-    ConfigGroup(
-      displayName: "Токсичность",
-      children: [
-        ConfigSelection(
-          displayName: "Модель",
-          name: "toxic_model",
-          options: [
-            "Random constant",
-            "RuBert by sismetanin",
-            "Russian toxicity classifier by SkolkovoInstitute",
-          ],
-        ),
-      ],
-    ),
-    ConfigGroup(
-      displayName: "Эмоциональность",
-      children: [
-        ConfigSelection(
-          displayName: "Модель",
-          name: "emotions_model",
-          options: [
-            "Random constant",
-            "RuBert by blanchefort",
-          ],
-        ),
-      ],
-    ),
-    ConfigGroup(
-      displayName: "Саркастичность",
-      children: [],
-    ),
-    ConfigGroup(
-      displayName: "Дополнительные параметры",
-      children: [],
-    ),
-  ],
-);
 
