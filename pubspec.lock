@@ -76,10 +76,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "8cc158f42aa2d24f71e436563141d6500e2d9271"
+      resolved-ref: "35e2584b6bcd262a7e1a5ace32cad2976c968522"
       url: "https://github.com/bdlukaa/fluent_ui.git"
     source: git
-    version: "3.9.0"
+    version: "3.9.2"
   flutter:
     dependency: "direct main"
     description: flutter
