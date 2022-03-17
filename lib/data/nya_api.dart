@@ -63,13 +63,13 @@ class NyaModel {
 }
 
 class NyaComment {
-  final Author author;
+  final NyaAuthor author;
   final String text;
   final DateTime date;
   final int level;
-  final Map<String, Map<String, double>?> predictions;
+  final Map<String, NyaPrediction> predictions;
 
-  NyaComment({
+  const NyaComment({
     required this.author,
     required this.text,
     required this.date,
@@ -79,7 +79,7 @@ class NyaComment {
 
   static NyaComment fromJson(Map<String, dynamic> json) {
     return NyaComment(
-        author: Author(
+        author: NyaAuthor(
             name: json['author']['name'],
             photoUrl: json['author']['photo']
         ),
@@ -87,9 +87,21 @@ class NyaComment {
         date: DateTime.parse(json['date']),
         level: json['level'],
         predictions: {
-          'toxic': json['toxic'],
-          'sentiment': json['sentiment'],
-          'sarcasm': json['sarcasm'],
+          'toxic': NyaPrediction(
+            label: (json['toxic'] as Map).keys.first,
+            percent: (json['toxic'] as Map).values.first,
+            grad: (json['toxic'] as Map).values.elementAt(1)
+          ),
+          'sentiment': NyaPrediction(
+              label: (json['sentiment'] as Map).keys.first,
+              percent: json['sentiment'],
+              grad: (json['sentiment'] as Map).values.elementAt(1)
+          ),
+          'sarcasm': NyaPrediction(
+              label: (json['sarcasm'] as Map).keys.first,
+              percent: json['sarcasm'],
+              grad: (json['sarcasm'] as Map).values.elementAt(1)
+          ),
         }
     );
   }
@@ -100,14 +112,26 @@ class NyaComment {
   }
 }
 
-class Author {
+class NyaAuthor {
   final String name;
   final String photoUrl;
 
-  Author({required this.name, required this.photoUrl});
+  NyaAuthor({required this.name, required this.photoUrl});
 
   @override
   String toString() {
     return 'Author{name: $name, photoUrl: $photoUrl}';
   }
+}
+
+class NyaPrediction {
+  final String label;
+  final int? percent;
+  final double? grad;
+
+  const NyaPrediction({
+    required this .label,
+    required this .percent,
+    required this .grad
+  });
 }
