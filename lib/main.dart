@@ -1,10 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:nya_mobile/pages/nya_settings_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:nya_mobile/prefs/nya_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initSharedPrefs(await SharedPreferences.getInstance());
+  await NyaPrefs.init();
 
   runApp(const NyaApp());
 }
