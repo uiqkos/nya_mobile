@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:nya_mobile/pages/nya_home_page.dart';
+import 'package:nya_mobile/pages/nya_results_page.dart';
 import 'package:nya_mobile/pages/nya_settings_page.dart';
 import 'package:nya_mobile/prefs/nya_prefs.dart';
 
@@ -26,7 +29,6 @@ class _NyaApp extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Colors.red,
         ),
-
         inputDecorationTheme: const InputDecorationTheme(
           contentPadding: EdgeInsets.all(15),
           border: OutlineInputBorder(
@@ -34,6 +36,11 @@ class _NyaApp extends StatelessWidget {
           ),
         ),
         textTheme: const TextTheme(
+          headline4: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 30,
+            color: Colors.black,
+          ),
           headline6: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
@@ -63,6 +70,42 @@ class _NyaMainWidget extends StatefulWidget {
 
 class _NyaMainWidgetState extends State<_NyaMainWidget> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+  int _currentIndex = 0;
+
+  void switchScreen(int index) {
+    if (index == _currentIndex) {
+      return;
+    }
+
+    switch (index) {
+      case 0:
+        // _navigatorKey.currentState?.pushReplacement(PageRouteBuilder(
+        //   pageBuilder: (ctx, anim1, anim2) => NyaHomePage(),
+        //   transitionDuration: Duration(milliseconds: 300),
+        //   transitionsBuilder: (ctx, anim, secondaryAnim, child) {
+        //     return SlideTransition(
+        //         child: child,
+        //         position: anim.drive(Tween(begin: Offset(1, 0), end: Offset.zero).chain(CurveTween(curve: Curves.ease))),
+        //     );
+        //   }
+        // ));
+        _navigatorKey.currentState?.popAndPushNamed('/');
+        break;
+      case 1:
+        _navigatorKey.currentState?.popAndPushNamed('/results');
+        break;
+      case 2:
+      // _navigatorKey.currentState?.popAndPushNamed('/reports');
+        break;
+      case 3:
+        _navigatorKey.currentState?.popAndPushNamed('/settings');
+        break;
+    }
+
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +120,10 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
               case '/':
                 builder = (ctx) => const NyaHomePage();
                 break;
-              case 'settings':
+              case '/results':
+                builder = (ctx) => const NyaResultsPage();
+                break;
+              case '/settings':
                 builder = (ctx) => const NyaSettingsPage();
                 break;
               default:
@@ -94,6 +140,7 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Theme.of(context).unselectedWidgetColor,
         showUnselectedLabels: true,
+        currentIndex: _currentIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -112,6 +159,7 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
             label: 'Настройки',
           ),
         ],
+        onTap: switchScreen,
       ),
     );
   }
