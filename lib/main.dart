@@ -15,14 +15,41 @@ class _NyaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Color(0xffdd2d4a);
+
     return MaterialApp(
       title: 'Nyaural nyatworks',
       home: const _NyaMainWidget(),
       theme: ThemeData(
+        primaryColor: primaryColor,
+        unselectedWidgetColor: Color(0xffa3a3a3),
         iconTheme: const IconThemeData(
           color: Colors.red,
         ),
-      ),
+
+        inputDecorationTheme: const InputDecorationTheme(
+          contentPadding: EdgeInsets.all(15),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))
+          ),
+        ),
+        textTheme: const TextTheme(
+          headline6: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Color(0xff2e0c19),
+          )
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(primaryColor),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            )),
+            foregroundColor: MaterialStateProperty.all(Colors.white),
+          )
+        )
+      )
     );
   }
 }
@@ -64,6 +91,9 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+        showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

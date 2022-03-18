@@ -23,8 +23,12 @@ class _NyaHomePageState extends State<NyaHomePage> {
               image: AssetImage('assets/images/logo.png'),
             ),
           ),
-          const Text('Социальная сеть'),
-          DropdownButton(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+            child: Text('Социальная сеть', style: Theme.of(context).textTheme.headline6),
+          ),
+          DropdownButtonFormField(
+            isExpanded: true,
             value: _socialNetwork,
             items: const [
               DropdownMenuItem(
@@ -40,17 +44,23 @@ class _NyaHomePageState extends State<NyaHomePage> {
               _socialNetwork = value!;
             }),
           ),
-          const Text('URL'),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
+            child: Text('URL', style: Theme.of(context).textTheme.headline6),
+          ),
           const TextField(
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
               labelText: 'URL',
             ),
           ),
+          const SizedBox(height: 30),
           SizedBox(
             width: double.infinity,
+            height: 60,
             child: TextButton(
-              child: const Text('Провести анализ'),
+              child: const Text('Провести анализ', style: TextStyle(
+                fontSize: 18,
+              ),),
               onPressed: () {},
             ),
           ),
