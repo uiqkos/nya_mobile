@@ -1,7 +1,7 @@
 # Nyaural Nyatworks
 
 Мобильный клиент к сервису Nyaural Nyatworks by [uiqkos](https://github.com/uiqkos).
-
+    
 ## Функционал
 * Анализ токсичности
 * Анализ эмоцианольной окраски
