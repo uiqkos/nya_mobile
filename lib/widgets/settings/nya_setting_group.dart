@@ -1,14 +1,16 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:nya_mobile/widgets/settings/nya_setting_widget.dart';
 
 class NyaSettingsGroup extends NyaSettingWidget {
   final String displayName;
   final List<NyaSettingWidget> children;
+  final Widget icon;
 
   const NyaSettingsGroup({
     Key? key,
     required this.displayName,
     required this.children,
+    required this.icon,
   }) : super(key: key);
 
   @override
@@ -20,12 +22,11 @@ class _NyaSettingGroupState extends State<NyaSettingsGroup> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Expander(
-        header: Text(widget.displayName),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.children,
-        ),
+      child: ExpansionTile(
+        leading: widget.icon,
+        title: Text(widget.displayName),
+        textColor: Theme.of(context).textTheme.headline4?.color,
+        children: widget.children,
       ),
     );
   }

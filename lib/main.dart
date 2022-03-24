@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:nya_mobile/pages/nya_home_page.dart';
 import 'package:nya_mobile/pages/nya_results_page.dart';
@@ -39,7 +37,7 @@ class _NyaApp extends StatelessWidget {
           headline4: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 30,
-            color: Colors.black,
+            color: Color(0xff2e0c19),
           ),
           headline6: TextStyle(
             fontWeight: FontWeight.bold,
