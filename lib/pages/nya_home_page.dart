@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nya_mobile/data/nya_predict_request.dart';
+import 'package:nya_mobile/data/nya_request_model.dart';
+import 'package:provider/provider.dart';
 
 class NyaHomePage extends StatefulWidget {
   const NyaHomePage({Key? key}) : super(key: key);
@@ -8,12 +11,15 @@ class NyaHomePage extends StatefulWidget {
 }
 
 class _NyaHomePageState extends State<NyaHomePage> {
-  var _socialNetwork = _SocialNetwork.auto;
+  var _inputMethod = _InputMethod.auto;
+  String _text = 'https://vk.com/feed?w=wall-185300191_102035';
 
   @override
   Widget build(BuildContext context) {
+    var requestModel = context.watch<NyaPredictRequestModel>();
+
     return Padding(
-      padding: EdgeInsets.all(40),
+      padding: const EdgeInsets.all(40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -29,29 +35,31 @@ class _NyaHomePageState extends State<NyaHomePage> {
           ),
           DropdownButtonFormField(
             isExpanded: true,
-            value: _socialNetwork,
+            value: _inputMethod,
             items: const [
               DropdownMenuItem(
-                value: _SocialNetwork.auto,
+                value: _InputMethod.auto,
                 child: Text('Определить автоматически'),
               ),
               DropdownMenuItem(
-                value: _SocialNetwork.youtube,
+                value: _InputMethod.youtube,
                 child: Text('Youtube'),
               ),
             ],
-            onChanged: (_SocialNetwork? value) => setState(() {
-              _socialNetwork = value!;
+            onChanged: (_InputMethod? value) => setState(() {
+              _inputMethod = value!;
             }),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
             child: Text('URL', style: Theme.of(context).textTheme.headline6),
           ),
-          const TextField(
-            decoration: InputDecoration(
+          TextFormField(
+            initialValue: _text,
+            decoration: const InputDecoration(
               labelText: 'URL',
             ),
+            onChanged: (text) => _text = text,
           ),
           const SizedBox(height: 30),
           SizedBox(
@@ -61,7 +69,13 @@ class _NyaHomePageState extends State<NyaHomePage> {
               child: const Text('Провести анализ', style: TextStyle(
                 fontSize: 18,
               ),),
-              onPressed: () {},
+              onPressed: () {
+                requestModel.request = NyaPredictRequest(
+                    text: _text,
+                    inputMethod: _inputMethod.name
+                );
+                requestModel.notifyListeners();
+              },
             ),
           ),
         ],
@@ -70,4 +84,4 @@ class _NyaHomePageState extends State<NyaHomePage> {
   }
 }
 
-enum _SocialNetwork { auto, youtube }
+enum _InputMethod { auto, youtube }

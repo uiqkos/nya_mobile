@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:nya_mobile/data/nya_request_model.dart';
 import 'package:nya_mobile/pages/nya_home_page.dart';
 import 'package:nya_mobile/pages/nya_results_page.dart';
 import 'package:nya_mobile/pages/nya_settings_page.dart';
 import 'package:nya_mobile/prefs/nya_prefs.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NyaPrefs.init();
-
-  runApp(const _NyaApp());
+  NyaPredictRequestModel.init('http://192.168.1.147:8000/');
+  
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => NyaPredictRequestModel())
+    ],
+    child: const _NyaApp(),
+  ));
 }
 
 class _NyaApp extends StatelessWidget {
@@ -69,6 +77,7 @@ class _NyaMainWidget extends StatefulWidget {
 class _NyaMainWidgetState extends State<_NyaMainWidget> {
   final _pageController = PageController();
   int _currentIndex = 0;
+
 
   @override
   Widget build(BuildContext context) {
