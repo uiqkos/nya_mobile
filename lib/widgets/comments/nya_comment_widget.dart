@@ -3,12 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:nya_mobile/data/nya_api.dart';
 
+import '../../data/nya_comment.dart';
+
 class NyaCommentWidget extends StatelessWidget {
-  final NyaComment root;
+  final NyaComment comment;
   final List<NyaComment> comments;
 
   const NyaCommentWidget(
-      {required this.root, this.comments = const <NyaComment>[], Key? key})
+      {required this.comment, this.comments = const <NyaComment>[], Key? key})
       : super(key: key);
 
   static Color floatColor(double grad) {
@@ -27,55 +29,59 @@ class NyaCommentWidget extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(backgroundImage: NetworkImage(root.author.photoUrl)),
+              CircleAvatar(
+                  backgroundImage: comment.author.photoUrl == null
+                      ? const AssetImage('assets/images/noavatar.png') as ImageProvider
+                      : NetworkImage(comment.author.photoUrl!)
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
+                    // Row(
+                    //   children: [
                         Text(
-                          root.author.name + ' ',
+                          comment.author.name + ' ',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18
                           ),
                         ),
                         Text(' '
-                            + DateFormat('yyyy-MM-dd').format(root.date)
+                            + DateFormat('yyyy-MM-dd').format(comment.date)
                             + ' at '
-                            + DateFormat('hh:mm').format(root.date),
+                            + DateFormat('hh:mm').format(comment.date),
                           style: TextStyle(
                             color: Colors.grey[100],
                             fontWeight: FontWeight.bold
                           ),
                         ),
-                      ],
-                    ),
+                    //   ],
+                    // ),
                     Row(
                       children: [
                         Tag(
-                          text: " ${root.predictions['toxic']!.label} ${root.predictions['toxic']!.percent}% ",
-                          color: floatColor(root.predictions['toxic']!.grad!),
+                          text: " ${comment.predictions['toxic']!.label} ${comment.predictions['toxic']!.percent}% ",
+                          color: floatColor(comment.predictions['toxic']!.grad!),
                         ),
                         const Text(' '),
                         Tag(
-                          text: " ${root.predictions['sentiment']!.label} ${root.predictions['sentiment']!.percent}% ",
-                          color: floatColor(root.predictions['sentiment']!.grad!),
+                          text: " ${comment.predictions['sentiment']!.label} ${comment.predictions['sentiment']!.percent}% ",
+                          color: floatColor(comment.predictions['sentiment']!.grad!),
                         ),
                         const Text(' '),
                       ],
                     ),
-                    SizedBox(height: 1),
+                    const SizedBox(height: 1),
                     Tag(
-                      text: " ${root.predictions['sarcasm']!.label} ${root.predictions['sarcasm']!.percent}% ",
-                      color: floatColor(root.predictions['sarcasm']!.grad!),
+                      text: " ${comment.predictions['sarcasm']!.label} ${comment.predictions['sarcasm']!.percent}% ",
+                      color: floatColor(comment.predictions['sarcasm']!.grad!),
                     ),
                     SizedBox(
                       width: 250,
                       child: Text(
-                        root.text,
+                        comment.text,
                         style: const TextStyle(fontSize: 18)
                       ),
                     )

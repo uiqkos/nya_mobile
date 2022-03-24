@@ -1,16 +1,22 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:nya_mobile/data/nya_request_model.dart';
 import 'package:nya_mobile/pages/nya_home_page.dart';
 import 'package:nya_mobile/pages/nya_results_page.dart';
 import 'package:nya_mobile/pages/nya_settings_page.dart';
 import 'package:nya_mobile/prefs/nya_prefs.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NyaPrefs.init();
-
-  runApp(const _NyaApp());
+  NyaPredictRequestModel.init('http://192.168.1.147:8000/');
+  
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => NyaPredictRequestModel())
+    ],
+    child: const _NyaApp(),
+  ));
 }
 
 class _NyaApp extends StatelessWidget {
@@ -18,14 +24,14 @@ class _NyaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var primaryColor = Color(0xffdd2d4a);
+    var primaryColor = const Color(0xffdd2d4a);
 
     return MaterialApp(
       title: 'Nyaural nyatworks',
       home: const _NyaMainWidget(),
       theme: ThemeData(
         primaryColor: primaryColor,
-        unselectedWidgetColor: Color(0xffa3a3a3),
+        unselectedWidgetColor: const Color(0xffa3a3a3),
         iconTheme: const IconThemeData(
           color: Colors.red,
         ),
@@ -80,14 +86,14 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
     switch (index) {
       case 0:
         // _navigatorKey.currentState?.pushReplacement(PageRouteBuilder(
-        //   pageBuilder: (ctx, anim1, anim2) => NyaHomePage(),
-        //   transitionDuration: Duration(milliseconds: 300),
-        //   transitionsBuilder: (ctx, anim, secondaryAnim, child) {
-        //     return SlideTransition(
-        //         child: child,
-        //         position: anim.drive(Tween(begin: Offset(1, 0), end: Offset.zero).chain(CurveTween(curve: Curves.ease))),
-        //     );
-        //   }
+      //         //   pageBuilder: (ctx, anim1, anim2) => NyaHomePage(),
+      //         //   transitionDuration: Duration(milliseconds: 300),
+      //         //   transitionsBuilder: (ctx, anim, secondaryAnim, child) {
+      //         //     return SlideTransition(
+      //         //         child: child,
+      //         //         position: anim.drive(Tween(begin: Offset(1, 0), end: Offset.zero).chain(CurveTween(curve: Curves.ease))),
+      //         //     );
+      //         //   }
         // ));
         _navigatorKey.currentState?.popAndPushNamed('/');
         break;
@@ -121,7 +127,7 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
                 builder = (ctx) => const NyaHomePage();
                 break;
               case '/results':
-                builder = (ctx) => const NyaResultsPage();
+                builder = (ctx) => NyaResultsPage();
                 break;
               case '/settings':
                 builder = (ctx) => const NyaSettingsPage();
