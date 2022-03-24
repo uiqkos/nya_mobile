@@ -22,7 +22,7 @@ class MainActivity: FlutterActivity() {
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
-            "ru.nya.nya_mobile",
+            "ru.nya.nya_mobile/sharing",
         ).setMethodCallHandler { call, result ->
             if (call.method == "getSharedLink") {
                 result.success(sharedLink)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nya_mobile/data/nya_predict_request.dart';
 import 'package:nya_mobile/data/nya_request_model.dart';
+import 'package:nya_mobile/main.dart';
 import 'package:provider/provider.dart';
 
 class NyaHomePage extends StatefulWidget {
@@ -54,12 +55,25 @@ class _NyaHomePageState extends State<NyaHomePage> {
             padding: const EdgeInsets.fromLTRB(15, 10, 0, 10),
             child: Text('URL', style: Theme.of(context).textTheme.headline6),
           ),
-          TextFormField(
-            initialValue: _text,
-            decoration: const InputDecoration(
-              labelText: 'URL',
-            ),
-            onChanged: (text) => _text = text,
+          FutureBuilder<String?>(
+            future: getSharedLink(),
+            builder: (ctx, snapshot) {
+              String value;
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                  value = _text;
+              } else {
+                  value = snapshot.data ?? _text;
+              }
+
+              return TextFormField(
+                key: Key(value),
+                initialValue: value,
+                decoration: const InputDecoration(
+                  labelText: 'URL',
+                ),
+                onChanged: (text) => _text = text,
+              );
+            },
           ),
           const SizedBox(height: 30),
           SizedBox(

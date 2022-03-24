@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nya_mobile/data/nya_request_model.dart';
 import 'package:nya_mobile/widgets/comments/nya_comment_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:nya_mobile/data/nya_request_model.dart';
 
-import '../data/nya_api.dart';
 import '../data/nya_comment.dart';
 import '../data/nya_predict_response.dart';
 
