@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 abstract class NyaSettingWidget extends StatefulWidget {
   const NyaSettingWidget({Key? key}) : super(key: key);
