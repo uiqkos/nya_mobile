@@ -40,3 +40,4 @@ class _ParserSettingState extends State<NyaParserSetting> {
     );
   }
 }
+
