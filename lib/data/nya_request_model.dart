@@ -7,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'nya_api.dart';
 import 'nya_predict_response.dart';
 
-class NyaPredictRequestModel extends ChangeNotifier {
+class
+NyaPredictRequestModel extends ChangeNotifier {
   static late final NyaApi api;
   NyaPredictRequest? _request;
 
