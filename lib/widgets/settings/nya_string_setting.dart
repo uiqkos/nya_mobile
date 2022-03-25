@@ -8,12 +8,14 @@ class NyaStringSetting extends NyaSettingWidget {
   final String displayName;
   final String hintText;
   final String defaultValue;
+  final String? overrideValue;
 
   const NyaStringSetting({
     Key? key,
     required this.name,
     required this.displayName,
     required this.hintText,
+    this.overrideValue,
     this.defaultValue = "",
   }) : super(key: key);
 
@@ -30,7 +32,11 @@ class _NyaStringSettingState extends State<NyaStringSetting> {
         displayName: widget.displayName,
         hintText: widget.hintText,
         controllerEditor: (TextEditingController controller) {
-          controller.text = NyaPrefs.instance.getString(widget.name) ?? widget.defaultValue;
+          if (widget.overrideValue != null) {
+            controller.text = widget.overrideValue!;
+          } else {
+            controller.text = NyaPrefs.instance.getString(widget.name) ?? widget.defaultValue;
+          }
         },
         onEditingComplete: (TextEditingController controller) {
           NyaPrefs.instance.setString(widget.name, controller.text);
