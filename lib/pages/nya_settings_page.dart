@@ -26,6 +26,10 @@ class NyaSettingsPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                const Divider(
+                  color: Color(0x2E0C1914),
+                  thickness: 2,
+                ),
                 NyaParserSetting(
                   icon: SvgPicture.asset(
                     'assets/icons/vk.svg',
@@ -34,6 +38,10 @@ class NyaSettingsPage extends StatelessWidget {
                   name: 'vk',
                   displayName: 'ВКонтакте',
                 ),
+                const Divider(
+                  color: Color(0x2E0C1914),
+                  thickness: 2,
+                ),
                 NyaParserSetting(
                   icon: SvgPicture.asset(
                     'assets/icons/youtube.svg',
@@ -41,6 +49,10 @@ class NyaSettingsPage extends StatelessWidget {
                   ),
                   name: 'youtube',
                   displayName: 'YouTube',
+                ),
+                const Divider(
+                  color: Color(0x2E0C1914),
+                  thickness: 2,
                 ),
                 Align(
                   alignment: Alignment.center,
