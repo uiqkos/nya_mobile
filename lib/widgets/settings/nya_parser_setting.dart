@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:nya_mobile/widgets/settings/nya_setting_group.dart';
 import 'package:nya_mobile/widgets/settings/nya_setting_widget.dart';
 import 'package:nya_mobile/widgets/settings/nya_string_setting.dart';
