@@ -22,11 +22,15 @@ class _NyaSettingGroupState extends State<NyaSettingsGroup> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ExpansionTile(
-        leading: widget.icon,
-        title: Text(widget.displayName),
-        textColor: Theme.of(context).textTheme.headline4?.color,
-        children: widget.children,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          leading: widget.icon,
+          title:  Text(widget.displayName),
+          textColor: Theme.of(context).textTheme.headline4?.color,
+          iconColor: Theme.of(context).iconTheme.color,
+          children: widget.children,
+        ),
       ),
     );
   }
