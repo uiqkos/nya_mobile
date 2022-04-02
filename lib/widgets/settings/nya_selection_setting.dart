@@ -7,15 +7,18 @@ class NyaSelectionSetting extends NyaSettingWidget {
   final String name;
   final String displayName;
   final String defaultValue;
-  final List<String> options;
+  final Map<String, String> optionByKey;
+  final Map<String, String> keyByOption;
 
-  const NyaSelectionSetting({
+  NyaSelectionSetting({
     Key? key,
     required this.name,
     required this.displayName,
     required this.defaultValue,
-    required this.options,
-  }) : super(key: key);
+    required this.optionByKey,
+  }) : keyByOption = optionByKey.map((key, value) => MapEntry(value, key)), super(key: key) {
+    NyaPrefs.instance.setString(name, optionByKey[defaultValue]!);
+  }
 
   @override
   State<NyaSelectionSetting> createState() => _NyaSelectionSettingState();
@@ -29,14 +32,15 @@ class _NyaSelectionSettingState extends State<NyaSelectionSetting> {
       child: NyaInfoLabel(
         name: widget.displayName,
         child: DropdownButtonFormField(
-          items: widget.options.map((elem) => DropdownMenuItem(
-            value: elem,
-            child: Text(elem),
+          items: widget.optionByKey.entries.map((entry) => DropdownMenuItem(
+            value: entry.key,
+            child: Text(entry.key),
           )).toList(growable: false),
-          value: NyaPrefs.instance.getString(widget.name) ?? widget.defaultValue,
+          value: widget.keyByOption[NyaPrefs.instance.getString(widget.name)],
           onChanged: (value) => setState(() {
             if (value != null) {
-              NyaPrefs.instance.setString(widget.name, value as String);
+              NyaPrefs.instance.setString(
+                  widget.name, widget.optionByKey[value as String]!);
             }
           }),
         ),
