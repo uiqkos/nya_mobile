@@ -81,7 +81,7 @@ class NyaSettingsPage extends StatelessWidget {
                         'Nyaural Nyatworks Mobile',
                         style: Theme.of(context).textTheme.headline6,
                       ),
-                      const Text('Версия 0.0.1-alpha.8.6.4.2'),
+                      const Text('Версия 0.1.0-beta.8.6.4.2'),
                     ],
                   ),
                 )
