@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -51,6 +52,8 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
   }
 
   void typeNextChar(Timer timer) async {
+    var random = Random();
+    
     if (typedText.length >= widget.text.length && !lastInvalid) {
       timer.cancel();
       return;
@@ -62,7 +65,7 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
         lastInvalid = false;
       } else  {
         String nextChar = widget.text[typedText.length];
-        if (Random().nextBool() && canMistake) {
+        if (random.nextDouble() < 0.2 && canMistake) {
           nextChar = _chooseCharAround(nextChar);
           lastInvalid = true;
           canMistake = false;
@@ -71,6 +74,7 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
         }
         typedText += nextChar;
       }
+      // sleep(Duration(microseconds: random.nextInt(1000)));
     });
   }
 
