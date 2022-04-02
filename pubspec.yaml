@@ -44,4 +44,3 @@ flutter:
     - family: ElectroHarmonix
       fonts:
         - asset: assets/fonts/electroharmonix.ttf
-
