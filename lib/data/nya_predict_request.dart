@@ -1,25 +1,23 @@
 class NyaPredictRequest {
-  final String text;
-  final String inputMethod;
-  final Map<String, String> models;
-  String? expandPath;
-  final int? page;
-  final int? perPage;
+  String text;
+  String inputMethod;
+  Map<String, String> models = {};
+  String expandPath;
+  int page;
+  int perPage;
 
   NyaPredictRequest({
     required this .text,
     required this .inputMethod,
-    this .models = const {},
-    this .expandPath,
-    this .page,
-    this .perPage,
+    this .expandPath = '',
+    this .page = 0,
+    this .perPage = 5,
   });
 
   NyaPredictRequest withExpand(String path) {
     return NyaPredictRequest(
       text: text,
       inputMethod: inputMethod,
-      models: models,
       expandPath: path,
       page: page,
       perPage: perPage
