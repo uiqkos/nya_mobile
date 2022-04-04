@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nya_mobile/data/nya_api.dart';
 
 import '../../data/nya_comment.dart';
 
@@ -13,10 +11,10 @@ class NyaCommentWidget extends StatelessWidget {
       {required this.comment, this.comments = const <NyaComment>[], Key? key})
       : super(key: key);
 
-  static Color floatColor(double grad) {
-    if (grad == 0.5) return Colors.blue;
-    if (grad > 0.5) return Colors.green;
-    if (grad < 0.5) return Colors.red;
+  static Color floatColor(int grad) {
+    if (grad == 1) return Colors.blue;
+    if (grad == 0) return Colors.green;
+    if (grad == 2) return Colors.red;
     return Colors.purple;
   }
 
@@ -31,7 +29,8 @@ class NyaCommentWidget extends StatelessWidget {
             children: [
               CircleAvatar(
                   backgroundImage: comment.author.photoUrl == null
-                      ? const AssetImage('assets/images/noavatar.png') as ImageProvider
+                      ? const AssetImage(
+                      'assets/images/noavatar.jpg') as ImageProvider
                       : NetworkImage(comment.author.photoUrl!)
               ),
               Padding(
@@ -41,48 +40,37 @@ class NyaCommentWidget extends StatelessWidget {
                   children: [
                     // Row(
                     //   children: [
-                        Text(
-                          comment.author.name + ' ',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18
-                          ),
-                        ),
-                        Text(' '
-                            + DateFormat('yyyy-MM-dd').format(comment.date)
-                            + ' at '
-                            + DateFormat('hh:mm').format(comment.date),
-                          style: TextStyle(
-                            color: Colors.grey[100],
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
+                    Text(
+                      comment.author.name + ' ',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18
+                      ),
+                    ),
+                    Text(' '
+                        + DateFormat('yyyy-MM-dd').format(comment.date)
+                        + ' at '
+                        + DateFormat('hh:mm').format(comment.date),
+                      style: TextStyle(
+                          color: Colors.grey[800],
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
                     //   ],
                     // ),
                     Row(
-                      children: [
-                        Tag(
-                          text: " ${comment.predictions['toxic']!.label} ${comment.predictions['toxic']!.percent}% ",
-                          color: floatColor(comment.predictions['toxic']!.grad!),
-                        ),
-                        const Text(' '),
-                        Tag(
-                          text: " ${comment.predictions['sentiment']!.label} ${comment.predictions['sentiment']!.percent}% ",
-                          color: floatColor(comment.predictions['sentiment']!.grad!),
-                        ),
-                        const Text(' '),
-                      ],
-                    ),
-                    const SizedBox(height: 1),
-                    Tag(
-                      text: " ${comment.predictions['sarcasm']!.label} ${comment.predictions['sarcasm']!.percent}% ",
-                      color: floatColor(comment.predictions['sarcasm']!.grad!),
+                        children: comment.predictions.map<Widget>((e) =>
+                                Tag(
+                                    color: floatColor(e.grad),
+                                    text: e.label + e.percent.toString()
+                                )
+                        ).toList()
                     ),
                     SizedBox(
                       width: 250,
                       child: Text(
-                        comment.text,
-                        style: const TextStyle(fontSize: 18)
+                          comment.text,
+                          style: const TextStyle(fontSize: 18)
                       ),
                     )
                   ],
@@ -110,8 +98,8 @@ class Tag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: color),
-        borderRadius: BorderRadius.circular(4)
+          border: Border.all(color: color),
+          borderRadius: BorderRadius.circular(4)
       ),
       child: Text(
         text,

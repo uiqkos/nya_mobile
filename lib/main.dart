@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:nya_mobile/data/nya_request_model.dart';
 import 'package:nya_mobile/pages/nya_home_page.dart';
 import 'package:nya_mobile/pages/nya_reports_page.dart';
@@ -16,8 +17,8 @@ Future<String?> getSharedLink() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NyaPrefs.init();
-  NyaPredictRequestModel.init('http://192.168.1.147:8000/');
+  await NyaPrefs.init({'api_url': 'http://192.168.1.147:8000/'});
+  NyaPredictRequestModel.init(NyaPrefs.instance.getString('api_url')!);
 
   runApp(MultiProvider(
     providers: [
@@ -46,8 +47,8 @@ class _NyaApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: primaryColor,
         unselectedWidgetColor: const Color(0xffa3a3a3),
-        iconTheme: const IconThemeData(
-          color: Colors.red,
+        iconTheme: IconThemeData(
+          color: primaryColor,
         ),
         inputDecorationTheme: const InputDecorationTheme(
           contentPadding: EdgeInsets.all(15),
@@ -94,6 +95,9 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var selectColor = Theme.of(context).primaryColor;
+    var unselectColor = Theme.of(context).unselectedWidgetColor;
+
     return Scaffold(
       body: SafeArea(
         child: PageView(
@@ -112,23 +116,43 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Theme.of(context).unselectedWidgetColor,
-        showUnselectedLabels: true,
+        // showUnselectedLabels: true,
         currentIndex: _currentIndex,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: SvgPicture.asset(
+              'assets/icons/ic_home.svg',
+              color: _currentIndex == 0
+                ? selectColor
+                : unselectColor,
+            ),
             label: 'Главная',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.view_list),
+            icon: SvgPicture.asset(
+              'assets/icons/ic_results.svg',
+              color: _currentIndex == 1
+                ? selectColor
+                : unselectColor,
+            ),
             label: 'Результаты',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.newspaper),
+            icon: SvgPicture.asset(
+              'assets/icons/ic_reports.svg',
+              color: _currentIndex == 2
+                ? selectColor
+                : unselectColor,
+            ),
             label: 'Отчеты',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: SvgPicture.asset(
+              'assets/icons/ic_setting.svg',
+              color: _currentIndex == 3
+                ? selectColor
+                : unselectColor,
+            ),
             label: 'Настройки',
           ),
         ],
@@ -153,7 +177,3 @@ class _NyaMainWidgetState extends State<_NyaMainWidget> {
     });
   }
 }
-
-
-
-

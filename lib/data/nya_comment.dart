@@ -5,8 +5,9 @@ class NyaComment {
   final String text;
   final DateTime date;
   final int level;
+  final int comments;
   final List<String> path;
-  final Map<String, NyaPrediction> predictions;
+  final List<NyaPrediction> predictions;
 
   const NyaComment({
     required this .id,
@@ -14,11 +15,17 @@ class NyaComment {
     required this .text,
     required this .date,
     required this .level,
+    required this .comments,
     required this .path,
     required this .predictions
   });
 
-  static NyaComment fromJson(Map<String, dynamic> json, List<String> parentPath) {
+  static NyaComment fromJson(
+      Map<String, dynamic> json,
+      List<String> parentPath,
+      Map<String, dynamic> grads
+  ) {
+    // print(grads);
     var c = NyaComment(
         author: NyaAuthor(
             name: json['author']['name'].toString(),
@@ -29,28 +36,14 @@ class NyaComment {
         text: json['text'],
         date: DateTime.parse(json['date']),
         level: json['level'],
+        comments: json['comments'],
         id: json['id'],
         path: List.from(parentPath)..add(json['id']),
-        predictions: {
-          // 'toxic': NyaPrediction(
-          //   (json['toxic'] as Map).keys.first,
-          //   (json['toxic'] as Map).values.first,
-          //   (json['toxic'] as Map).values.elementAt(1)
-          // ),
-          // 'sentiment': NyaPrediction(
-          //     (json['sentiment'] as Map).keys.first,
-          //     json['sentiment'],
-          //     (json['sentiment'] as Map).values.elementAt(1)
-          // ),
-          // 'sarcasm': NyaPrediction(
-          //     (json['sarcasm'] as Map).keys.first,
-          //     json['sarcasm'],
-          //     (json['sarcasm'] as Map).values.elementAt(1)
-          // ),
-          'toxic': NyaPrediction('no toxic', 86, 1),
-          'sentiment': NyaPrediction('netrual',99,0.5),
-          'sarcasm': NyaPrediction('no sarcasm',62,1)
-        }
+        predictions: (json['predictions'] as Map<String, dynamic>)
+          .entries
+          .map((entry) =>
+            NyaPrediction.fromJson(entry.value, grads[entry.key]))
+          .toList()
     );
 
     // print(c);
@@ -78,10 +71,25 @@ class NyaAuthor {
 
 class NyaPrediction {
   final String label;
-  final int? percent;
-  final double? grad;
+  final int percent;
+  final int grad;
 
   NyaPrediction(this.label, this.percent, this.grad);
+
+  static NyaPrediction fromJson(
+      Map<String, dynamic> json,
+      Map<String, dynamic> grads
+  ) {
+    var best = json.entries.fold<MapEntry>(
+        const MapEntry('unknown', 0.0),
+        (previous, element) =>
+          (element.value > previous.value)
+              ? element
+              : previous
+    );
+
+    return NyaPrediction(best.key, (best.value * 100.0).round(), grads[best.key] as int);
+  }
 
   @override
   String toString() {

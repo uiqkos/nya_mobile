@@ -40,8 +40,8 @@ class NyaApi {
 
     params.addAll(models);
 
-    if (page != null) params['page'] = page;
-    if (perPage != null) params['perPage'] = perPage;
+    if (page != null) params['page'] = page.toString();
+    if (perPage != null) params['per_page'] = perPage.toString();
     if (expand != null) params['expand'] = expand;
 
     var json = await _getJson('predict', params: params);
@@ -52,7 +52,7 @@ class NyaApi {
     // print(json);
 
     var comments = (json['items'] as List)
-        .map((e) => NyaComment.fromJson(e, path))
+        .map((e) => NyaComment.fromJson(e, path, json['grads']))
         .toList();
 
     return NyaPredictResponse(

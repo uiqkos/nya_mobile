@@ -3,14 +3,14 @@ import 'package:nya_mobile/widgets/settings/nya_setting_widget.dart';
 
 class NyaSettingsGroup extends NyaSettingWidget {
   final String displayName;
-  final List<NyaSettingWidget> children;
-  final Widget icon;
+  final List<Widget> children;
+  final Widget? icon;
 
   const NyaSettingsGroup({
     Key? key,
     required this.displayName,
     required this.children,
-    required this.icon,
+    this.icon,
   }) : super(key: key);
 
   @override
