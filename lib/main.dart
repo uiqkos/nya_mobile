@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nya_mobile/data/nya_request_model.dart';
+import 'package:nya_mobile/data/nya_shared_link_provider.dart';
 import 'package:nya_mobile/pages/nya_home_page.dart';
 import 'package:nya_mobile/pages/nya_reports_page.dart';
 import 'package:nya_mobile/pages/nya_results_page.dart';
 import 'package:nya_mobile/pages/nya_settings_page.dart';
 import 'package:nya_mobile/prefs/nya_prefs.dart';
 import 'package:provider/provider.dart';
-
-const sharingChannel = MethodChannel('ru.nya.nya_mobile/sharing');
-
-Future<String?> getSharedLink() async {
-  return sharingChannel.invokeMethod('getSharedLink');
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +17,7 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => NyaPredictRequestModel()),
+      ChangeNotifierProvider(create: (context) => NyaSharedLinkProvider()),
     ],
     child: const _NyaApp(),
   ));
