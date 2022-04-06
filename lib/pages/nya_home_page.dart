@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nya_mobile/data/nya_caching.dart';
+import 'package:nya_mobile/data/nya_shared_link_provider.dart';
 import 'package:nya_mobile/widgets/settings/nya_selection_setting.dart';
 import 'package:nya_mobile/widgets/settings/nya_string_setting.dart';
 import 'package:nya_mobile/data/nya_predict_request.dart';
 import 'package:nya_mobile/data/nya_request_model.dart';
 import 'package:provider/provider.dart';
-import 'package:nya_mobile/main.dart';
 
 import '../data/nya_api.dart';
 import '../prefs/nya_prefs.dart';
@@ -29,6 +29,7 @@ class _NyaHomePageState extends State<NyaHomePage> {
   @override
   Widget build(BuildContext context) {
     var requestModel = context.watch<NyaPredictRequestModel>();
+    var sharedLink = context.select((NyaSharedLinkProvider provider) => provider.sharedLink);
 
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -60,18 +61,13 @@ class _NyaHomePageState extends State<NyaHomePage> {
               },
               defaultValue: 'Определить автоматически',
             ),
-            FutureBuilder<String?>(
-              future: getSharedLink(),
-              builder: (ctx, snapshot) {
-                return NyaStringSetting(
-                  key: Key(snapshot.hasData.toString()),
-                  overrideValue: snapshot.data,
-                  name: 'text',
-                  displayName: 'Текст',
-                  hintText: 'Текст',
-                  defaultValue: 'https://vk.com/feed?w=wall-183293188_1025586',
-                );
-              },
+            NyaStringSetting(
+              key: Key(sharedLink ?? "null"),
+              overrideValue: sharedLink,
+              name: 'text',
+              displayName: 'Текст',
+              hintText: 'Текст',
+              defaultValue: 'https://vk.com/feed?w=wall-183293188_1025586',
             ),
             const SizedBox(height: 20),
             FutureBuilder(
@@ -183,7 +179,6 @@ class _NyaHomePageState extends State<NyaHomePage> {
                 },
               ),
             )
-
           ],
         ),
       ),
