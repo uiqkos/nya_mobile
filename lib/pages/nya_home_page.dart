@@ -37,18 +37,18 @@ class _NyaHomePageState extends State<NyaHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.all(32),
-              child: SizedBox(
-                height: 100,
-                child: NyaMissTypeWidget(
-                  text: 'Nyaural Nyatworks',
-                  textStyle: TextStyle(
-                    fontFamily: 'ElectroHarmonix',
-                    fontSize: 40,
-                  ),
-                  typeInterval: Duration(milliseconds: 300),
-                ),
-              ),
+               padding: EdgeInsets.all(32),
+               child: SizedBox(
+                 height: 100,
+                 child: NyaMissTypeWidget(
+                   text: 'Nyaural Nyatworks',
+                   textStyle: TextStyle(
+                     fontFamily: 'ElectroHarmonix',
+                     fontSize: 40,
+                   ),
+                   typeInterval: Duration(milliseconds: 300),
+                 ),
+               ),
             ),
             NyaSelectionSetting(
               name: 'input_method',
@@ -147,40 +147,43 @@ class _NyaHomePageState extends State<NyaHomePage> {
               },
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: TextButton(
-                child: const Text(
-                  'Провести анализ',
-                  style: TextStyle(
-                    fontSize: 18,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: TextButton(
+                  child: const Text(
+                    'Провести анализ',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
+                  onPressed: () {
+                    NyaCacherProvider
+                        .provide('request')
+                        .invalidateAll();
+
+                    requestModel.clear();
+                    requestModel.request = NyaPredictRequest(
+                      text: NyaPrefs.instance.getString('text')!,
+                      inputMethod: NyaPrefs.instance.getString('input_method')!,
+                      perPage: 3,
+                      page: 1
+                    );
+
+                    NyaPrefs
+                      .instance
+                      .getStringList('targets')
+                      ?.forEach((target) {
+                        var modelName = NyaPrefs.instance.getString(target);
+                        if (modelName != null) {
+                          requestModel.request!.models[target] = modelName;
+                        }
+                      });
+
+                  },
                 ),
-                onPressed: () {
-                  NyaCacherProvider
-                      .provide('request')
-                      .invalidateAll();
-
-                  requestModel.clear();
-                  requestModel.request = NyaPredictRequest(
-                    text: NyaPrefs.instance.getString('text')!,
-                    inputMethod: NyaPrefs.instance.getString('input_method')!,
-                    perPage: 3,
-                    page: 1
-                  );
-
-                  NyaPrefs
-                    .instance
-                    .getStringList('targets')
-                    ?.forEach((target) {
-                      var modelName = NyaPrefs.instance.getString(target);
-                      if (modelName != null) {
-                        requestModel.request!.models[target] = modelName;
-                      }
-                    });
-
-                },
               ),
             )
 

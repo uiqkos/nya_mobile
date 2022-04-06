@@ -114,23 +114,45 @@ class NyaTag {
   }
 }
 
+class NyaChapter {
+  final String name;
+  final String text;
+
+  NyaChapter({
+    required this .name,
+    required this .text
+  });
+
+  static List<NyaChapter> fromText(String text) {
+    var chapters = text.split('\n# ');
+    chapters = chapters.sublist(1);
+    return List.generate(
+        chapters.length,
+        (index) {
+          var lines = chapters[index].split('\n');
+          return NyaChapter(name: lines.first, text: '\n# ' + chapters[index]);
+        }
+    );
+  }
+}
+
 
 class NyaReport {
   final String name;
   final String title;
-  final String text;
+  final List<NyaChapter> chapters;
   final List<NyaTag> tags;
 
   NyaReport({
     required this .name,
     required this .title,
-    required this .text,
+    required this .chapters,
     required this .tags,
   });
 
   static NyaReport fromJson(Map<String, dynamic> json) {
     return NyaReport(
-      text: json['text'],
+      chapters: NyaChapter.fromText(json['text']),
       name: json['name'],
       title: json['title'],
       tags: (json['tags'] as List)
