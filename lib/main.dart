@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NyaPrefs.init({'api_url': 'http://192.168.1.147:8000/'});
-  NyaPredictRequestModel.init(NyaPrefs.instance.getString('api_url')!);
+  await NyaPrefs.init({'api_url': 'http://192.168.1.147:8000/',});
+  NyaPredictRequestModel.init(NyaPrefs.getInstance().getString('api_url')!);
 
   runApp(MultiProvider(
     providers: [
@@ -35,12 +35,32 @@ class _NyaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var primaryColor = const Color(0xffdd2d4a);
+    var secondaryColor = const Color(0xfff26a8d);
 
     return MaterialApp(
       title: 'Nyaural nyatworks',
       home: const _NyaMainWidget(),
       theme: ThemeData(
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+
+          primary: primaryColor,
+          onPrimary: Colors.white,
+
+          error: primaryColor,
+          onError: Colors.white,
+
+          secondary: secondaryColor,
+          onSecondary: Colors.white,
+
+          background: Colors.white,
+          onBackground: Colors.grey[850]!,
+
+          surface: Colors.grey[300]!,
+          onSurface: Colors.grey[850]!,
+        ),
         primaryColor: primaryColor,
+        // splashColor: Colors.white,
         unselectedWidgetColor: const Color(0xffa3a3a3),
         iconTheme: IconThemeData(
           color: primaryColor,
@@ -70,6 +90,8 @@ class _NyaApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             )),
             foregroundColor: MaterialStateProperty.all(Colors.white),
+            overlayColor: MaterialStateColor.resolveWith(
+                    (states) => secondaryColor),
           ),
         ),
       ),

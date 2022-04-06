@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nya_mobile/data/nya_caching.dart';
 import 'package:nya_mobile/prefs/nya_prefs.dart';
 import 'package:nya_mobile/widgets/settings/nya_parser_setting.dart';
 
@@ -33,7 +34,7 @@ class NyaSettingsPage extends StatelessWidget {
                   name: 'api_url',
                   displayName: 'URL сервера',
                   hintText: 'URL сервера',
-                  defaultValue: NyaPrefs.instance.getString('api_url')!,
+                  defaultValue: NyaPrefs.getInstance().getString('api_url')!,
                 ),
                 const Divider(
                   color: Color(0x2E0C1914),
@@ -84,7 +85,8 @@ class NyaSettingsPage extends StatelessWidget {
                       const Text('Версия 0.1.0-beta.8.6.4.2'),
                     ],
                   ),
-                )
+                ),
+                const SizedBox(height: 50)
               ],
             ),
           ),

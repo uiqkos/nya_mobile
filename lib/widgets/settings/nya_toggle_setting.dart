@@ -29,12 +29,12 @@ class _NyaToggleSettingState extends State<NyaToggleSetting> {
         child: Switch(
           value: _isChecked(),
           onChanged: (value) => setState(() {
-            NyaPrefs.instance.setBool(widget.name, value);
+            NyaPrefs.getInstance().setBool(widget.name, value);
           }),
         ),
       ),
     );
   }
 
-  bool _isChecked() => NyaPrefs.instance.getBool(widget.name) ?? widget.defaultValue;
+  bool _isChecked() => NyaPrefs.getInstance().getBool(widget.name) ?? widget.defaultValue;
 }
