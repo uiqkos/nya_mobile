@@ -25,4 +25,8 @@ class NyaCacherProvider {
     _cachers[key] ??= NyaCacher();
     return _cachers[key]!;
   }
+
+  static void clear() {
+    _cachers.clear();
+  }
 }

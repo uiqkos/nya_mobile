@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nya_mobile/data/nya_request_model.dart';
+import 'package:nya_mobile/data/nya_shared_link_provider.dart';
 import 'package:nya_mobile/pages/nya_home_page.dart';
 import 'package:nya_mobile/pages/nya_reports_page.dart';
 import 'package:nya_mobile/pages/nya_results_page.dart';
@@ -9,20 +9,15 @@ import 'package:nya_mobile/pages/nya_settings_page.dart';
 import 'package:nya_mobile/prefs/nya_prefs.dart';
 import 'package:provider/provider.dart';
 
-const sharingChannel = MethodChannel('ru.nya.nya_mobile/sharing');
-
-Future<String?> getSharedLink() async {
-  return sharingChannel.invokeMethod('getSharedLink');
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NyaPrefs.init({'api_url': 'http://192.168.1.147:8000/'});
-  NyaPredictRequestModel.init(NyaPrefs.instance.getString('api_url')!);
+  await NyaPrefs.init({'api_url': 'http://192.168.1.147:8000/',});
+  NyaPredictRequestModel.init(NyaPrefs.getInstance().getString('api_url')!);
 
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => NyaPredictRequestModel()),
+      ChangeNotifierProvider(create: (context) => NyaSharedLinkProvider()),
     ],
     child: const _NyaApp(),
   ));
@@ -40,12 +35,32 @@ class _NyaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var primaryColor = const Color(0xffdd2d4a);
+    var secondaryColor = const Color(0xfff26a8d);
 
     return MaterialApp(
       title: 'Nyaural nyatworks',
       home: const _NyaMainWidget(),
       theme: ThemeData(
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+
+          primary: primaryColor,
+          onPrimary: Colors.white,
+
+          error: primaryColor,
+          onError: Colors.white,
+
+          secondary: secondaryColor,
+          onSecondary: Colors.white,
+
+          background: Colors.white,
+          onBackground: Colors.grey[850]!,
+
+          surface: Colors.grey[300]!,
+          onSurface: Colors.grey[850]!,
+        ),
         primaryColor: primaryColor,
+        // splashColor: Colors.white,
         unselectedWidgetColor: const Color(0xffa3a3a3),
         iconTheme: IconThemeData(
           color: primaryColor,
@@ -75,6 +90,8 @@ class _NyaApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             )),
             foregroundColor: MaterialStateProperty.all(Colors.white),
+            overlayColor: MaterialStateColor.resolveWith(
+                    (states) => secondaryColor),
           ),
         ),
       ),

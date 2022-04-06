@@ -5,20 +5,22 @@ class NyaComment {
   final String text;
   final DateTime date;
   final int level;
-  final int comments;
+  final int commentCount;
   final List<String> path;
   final List<NyaPrediction> predictions;
+  List<NyaComment> comments;
 
-  const NyaComment({
+  NyaComment({
     required this .id,
     required this .author,
     required this .text,
     required this .date,
     required this .level,
-    required this .comments,
+    required this .commentCount,
     required this .path,
-    required this .predictions
-  });
+    required this .predictions,
+    List<NyaComment>? comments
+  }): comments = comments ?? [];
 
   static NyaComment fromJson(
       Map<String, dynamic> json,
@@ -36,7 +38,7 @@ class NyaComment {
         text: json['text'],
         date: DateTime.parse(json['date']),
         level: json['level'],
-        comments: json['comments'],
+        commentCount: json['comments'],
         id: json['id'],
         path: List.from(parentPath)..add(json['id']),
         predictions: (json['predictions'] as Map<String, dynamic>)

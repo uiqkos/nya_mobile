@@ -15,19 +15,80 @@ class NyaResultsPage extends StatefulWidget {
 }
 
 class _NyaResultsPageState extends State<NyaResultsPage> {
+  Widget expandComment(
+      NyaComment comment,
+      NyaPredictRequestModel requestModel
+  ) {
+    var widgets = <Widget>[];
+
+    widgets.add(NyaCommentWidget(comment: comment));
+
+    for (var childComment in comment.comments) {
+      widgets.add(expandComment(childComment, requestModel));
+    }
+
+    if (comment.commentCount > comment.comments.length) {
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child:
+            SizedBox(
+              width: 200,
+              height: 40,
+              child: TextButton(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_downward_rounded,
+                        size: 17,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      Text(
+                          (comment.comments.isEmpty) ? ' показать комментарии' : ' показать больше',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14
+                        )
+                      ),
+                    ],
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty
+                        .all<Color>(Colors.transparent),
+                    overlayColor: MaterialStateColor.resolveWith(
+                            (states) => Colors.grey[200]!)
+                  ),
+                  onPressed: () {
+                    var path = comment.path.join('/');
+                    requestModel.nextPage(path);
+                  }),
+            )
+        )
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(left: comment.level > 0 ? 20.0 : 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: widgets
+      )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     var requestModel = context.watch<NyaPredictRequestModel>();
 
-    return FutureBuilder<List<NyaComment>?>(
+    return FutureBuilder<NyaComment?>(
         future: NyaCacherProvider.provide('request').getCache(
             requestModel.request.toString(),
             requestModel.getComments
         ),
         builder: (
             BuildContext context,
-            AsyncSnapshot<List<NyaComment>?> snapshot
+            AsyncSnapshot<NyaComment?> snapshot
         ) {
           idk(String message) => Padding(
                 padding: const EdgeInsets.fromLTRB(20, 150, 20, 0),
@@ -45,59 +106,32 @@ class _NyaResultsPageState extends State<NyaResultsPage> {
                 )
             );
 
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return idk('Результатов пока нет');
-
-            case ConnectionState.waiting:
-              return const Image(image: AssetImage('assets/images/catloading.gif'));
-
-            default:
-              var comments = <NyaComment>[];
-              if (snapshot.hasError) {
-                print(snapshot.stackTrace.toString());
-                return idk(snapshot.error.toString());
-              } else if (snapshot.hasData) {
-                comments = snapshot.data!;
-              } else {
-                return idk('Результатов пока нет');
-              }
-
-              var children = <Padding>[];
-
-              for (var comment in comments) {
-                children.add(Padding(
-                    padding: EdgeInsets.only(left: 30.0 * comment.level),
-                    child: Column(
-                      children: [
-                        NyaCommentWidget(comment: comment),
-                        if (comment.comments > 0)
-                          SizedBox(
-                            width: 120,
-                            height: 30,
-                            child: TextButton(
-                                child: const Text(
-                                    'показать комментарии',
-                                    style: TextStyle(fontSize: 10)
-                                ),
-                                onPressed: () {
-                                  var path = comment.path.join('/');
-                                  requestModel.nextPage(path);
-                                }),
-                          )
-                        ]
-                      ),
-                    ));
-              }
-
-              return Scaffold(
-                  body: SingleChildScrollView(
-                      child: Column(
-                          children: children
-                      )
-                  )
-              );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            if (requestModel.rootComment == null) {
+              return const Image(
+                  image: AssetImage('assets/images/catloading.gif'));
+            }
           }
+
+          NyaComment? comment;
+
+          if (snapshot.hasError) {
+            print(snapshot.stackTrace.toString());
+            return idk(snapshot.error.toString());
+
+          } else if (snapshot.hasData) {
+            comment = snapshot.data!;
+
+          } else {
+            return idk('Результатов пока нет');
+
+          }
+
+          return Scaffold(
+            body: SingleChildScrollView(
+              child: expandComment(comment, requestModel)
+            )
+          );
         });
   }
 }

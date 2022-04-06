@@ -65,7 +65,17 @@ class NyaApi {
   }
 
   Future<List<NyaModel>> models() async {
-    return (await _getJson('models') as List).map((e) => NyaModel.fromJson(e)).toList();
+    return (await _getJson('models') as List)
+        .map((e) => NyaModel.fromJson(e)).toList();
+  }
+
+  Future<List<NyaReport>> reports() async {
+    return (await _getJson('reports') as List)
+        .map((e) => NyaReport.fromJson(e)).toList();
+  }
+
+  Future<NyaReport> reportById(String id) async {
+    return NyaReport.fromJson(await _getJson('reports/' + id));
   }
 }
 
@@ -87,5 +97,48 @@ class NyaModel {
   @override
   String toString() {
     return 'NyaModel{displayName: $displayName, name: $name, target: $target}';
+  }
+}
+
+
+class NyaTag {
+  final String name;
+  final int grad;
+
+  NyaTag({
+    required this .name,
+    required this .grad
+  });
+
+  static NyaTag fromJson(Map<String, dynamic> json) {
+    return NyaTag(
+      name: json['name'],
+      grad: json['grad'],
+    );
+  }
+}
+
+
+class NyaReport {
+  final String name;
+  final String title;
+  final String text;
+  final List<NyaTag> tags;
+
+  NyaReport({
+    required this .name,
+    required this .title,
+    required this .text,
+    required this .tags,
+  });
+
+  static NyaReport fromJson(Map<String, dynamic> json) {
+    return NyaReport(
+      text: json['text'],
+      name: json['name'],
+      title: json['title'],
+      tags: (json['tags'] as List)
+          .map((e) => NyaTag.fromJson(e)).toList(),
+    );
   }
 }

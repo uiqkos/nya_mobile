@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nya_mobile/data/nya_caching.dart';
 import 'package:nya_mobile/widgets/settings/nya_setting_widget.dart';
 
 class NyaSettingsGroup extends NyaSettingWidget {
@@ -25,6 +26,14 @@ class _NyaSettingGroupState extends State<NyaSettingsGroup> {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          initiallyExpanded: NyaCacherProvider
+              .provide('expansion')
+              .getCache(widget.displayName, () => false),
+          onExpansionChanged: (bool isExpand) {
+            NyaCacherProvider
+                .provide('expansion')
+                .getCache(widget.displayName, () => isExpand);
+          },
           leading: widget.icon,
           title:  Text(widget.displayName),
           textColor: Theme.of(context).textTheme.headline4?.color,

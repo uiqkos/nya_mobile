@@ -32,7 +32,7 @@ class _NyaTextFieldState extends State<NyaTextField> {
   void initState() {
     super.initState();
     widget.controllerEditor?.call(controller);
-    //controller.text = NyaPrefs.instance.getString(widget.name) ?? widget.defaultValue;
+    //controller.text = NyaPrefs.getInstance().getString(widget.name) ?? widget.defaultValue;
   }
 
   @override

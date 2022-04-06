@@ -16,11 +16,22 @@ String _chooseCharAround(String char) {
   int colIndex = _keyboardLayout[rowIndex].indexOf(char);
 
   var random = Random();
+  var vertical = 0;
+  var horizontal = 0;
+
   if (random.nextBool()) {
-    rowIndex += random.nextBool() ? 1 : -1;
-  } else if (random.nextBool()) {
-    colIndex += random.nextBool() ? 1 : -1;
+    vertical = random.nextBool() ? 1 : -1;
   }
+  if (random.nextBool()) {
+    horizontal = random.nextBool() ? 1 : -1;
+  }
+
+  rowIndex = min(rowIndex + vertical, _keyboardLayout.length);
+  rowIndex = max(0, rowIndex);
+
+  colIndex = min(colIndex + horizontal, _keyboardLayout[rowIndex].length);
+  colIndex = max(0, colIndex);
+
   return _keyboardLayout[rowIndex][colIndex];
 }
 
@@ -74,14 +85,13 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
         }
         typedText += nextChar;
       }
-      // sleep(Duration(microseconds: random.nextInt(1000)));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      typedText.toString(),
+      typedText,
       textAlign: TextAlign.center,
       style: widget.textStyle,
     );

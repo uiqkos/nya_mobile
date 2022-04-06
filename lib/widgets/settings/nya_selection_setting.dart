@@ -17,7 +17,7 @@ class NyaSelectionSetting extends NyaSettingWidget {
     required this.defaultValue,
     required this.optionByKey,
   }) : keyByOption = optionByKey.map((key, value) => MapEntry(value, key)), super(key: key) {
-    NyaPrefs.instance.setString(name, optionByKey[defaultValue]!);
+    NyaPrefs.getInstance().setString(name, optionByKey[defaultValue]!);
   }
 
   @override
@@ -36,10 +36,10 @@ class _NyaSelectionSettingState extends State<NyaSelectionSetting> {
             value: entry.key,
             child: Text(entry.key),
           )).toList(growable: false),
-          value: widget.keyByOption[NyaPrefs.instance.getString(widget.name)],
+          value: widget.keyByOption[NyaPrefs.getInstance().getString(widget.name)],
           onChanged: (value) => setState(() {
             if (value != null) {
-              NyaPrefs.instance.setString(
+              NyaPrefs.getInstance().setString(
                   widget.name, widget.optionByKey[value as String]!);
             }
           }),
