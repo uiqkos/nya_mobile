@@ -6,7 +6,6 @@ import 'package:nya_mobile/widgets/settings/nya_string_setting.dart';
 import 'package:nya_mobile/data/nya_predict_request.dart';
 import 'package:nya_mobile/data/nya_request_model.dart';
 import 'package:provider/provider.dart';
-import 'package:nya_mobile/main.dart';
 
 import '../data/nya_api.dart';
 import '../prefs/nya_prefs.dart';
