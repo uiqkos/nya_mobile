@@ -16,6 +16,7 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
+      // ChangeNotifierProvider(create: (context) => NyaReportsModel()),
       ChangeNotifierProvider(create: (context) => NyaPredictRequestModel()),
       ChangeNotifierProvider(create: (context) => NyaSharedLinkProvider()),
     ],
@@ -35,6 +36,7 @@ class _NyaApp extends StatelessWidget {
       title: 'Nyaural nyatworks',
       home: const _NyaMainWidget(),
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme(
           brightness: Brightness.light,
 
@@ -50,11 +52,10 @@ class _NyaApp extends StatelessWidget {
           background: Colors.white,
           onBackground: Colors.grey[850]!,
 
-          surface: Colors.grey[300]!,
+          surface: Colors.white,
           onSurface: Colors.grey[850]!,
         ),
         primaryColor: primaryColor,
-        // splashColor: Colors.white,
         unselectedWidgetColor: const Color(0xffa3a3a3),
         iconTheme: IconThemeData(
           color: primaryColor,

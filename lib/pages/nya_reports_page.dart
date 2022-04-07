@@ -4,6 +4,9 @@ import 'package:nya_mobile/data/nya_api.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../data/nya_caching.dart';
+import '../prefs/nya_prefs.dart';
+
 class NyaReportsPage extends StatefulWidget {
   const NyaReportsPage({Key? key}) : super(key: key);
 
@@ -13,118 +16,125 @@ class NyaReportsPage extends StatefulWidget {
 
 class _NyaReportsPageState extends State<NyaReportsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late final List<NyaReport> data;
-  late NyaReport report;
   final ItemScrollController itemScrollController = ItemScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    var text = """# Nyaural Nyatworks
-
-Мобильный клиент к сервису Nyaural Nyatworks by [uiqkos](https://github.com/uiqkos).
-    
-## Функционал
-* Анализ токсичности
-* Анализ эмоцианольной окраски
-* Информация о моделях и датасетах
-* Использование нескольких социальных сетей в качестве источника
-## Спринты
-* [3 спринт.pdf](https://drive.google.com/file/d/10YDX3f46g3BK9lTlMCMkKHoJJCBeaadI/view?usp=sharing)
-* [4 спринт.pdf](https://drive.google.com/file/d/10b4MF-Pj8Ggp6u_qfvfsQmLcR8NOP7pH/view?usp=sharing)
-* [5 спринт.pdf](https://drive.google.com/file/d/10pgA78zsIYeJ5mIzX_PGUplpHo_6xqvp/view?usp=sharing)
-""" * 10;
-    //data = await NyaApi(NyaPrefs.instance.getString('api_url')!).reports();
-    data = [
-      NyaReport.fromJson({'name': "Name", 'title': "Title", 'text': "1\n" + text, 'tags': [{'name': 'name', 'grad': 12}]}),
-      NyaReport.fromJson({'name': "Name", 'title': "Title", 'text': "1\n" + text, 'tags': [{'name': 'name', 'grad': 12}]}),
-      ];
-    report = data.first;
-  }
+  final String baseUrl = NyaPrefs.getInstance().getString('api_url')!;
+  NyaReport? report;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          "Содержание",
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Theme.of(context).textTheme.headline6?.color,),
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            var chapters = data[index].chapters;
-            return Column(
-              children: [
-                ListTile(
-                  title: Text(
-                    data[index].name,
-                    style: Theme.of(context).textTheme.headline1,
-                    textAlign: TextAlign.left,
-                  )
-                ),
-                Column(
-                  children: List.generate(
-                    chapters.length,
-                    (i) {
-                      return Column(
-                        children: [
+    return FutureBuilder(
+      future: NyaCacherProvider
+          .provide('reports')
+          .getCache('reports', NyaApi(baseUrl).reports),
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<List<NyaReport>> snapshot
+      ) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return const Text('Empty');
+
+          case ConnectionState.waiting:
+            return const Image(
+                image: AssetImage('assets/images/catloading.gif'));
+
+          default:
+            if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
+
+            if (snapshot.hasData) {
+              var reports = snapshot.data!;
+              report ??= reports.first;
+
+              return Scaffold(
+                  key: _scaffoldKey,
+                  appBar: AppBar(
+                    title: Text(
+                      "Содержание",
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    elevation: 0,
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: Theme.of(context).textTheme.headline6?.color,
+                      ),
+                      onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                    ),
+                  ),
+                  drawer: Drawer(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: reports.length,
+                      itemBuilder: (context, index) {
+                        var chapters = reports[index].chapters;
+                        return Column(children: [
                           ListTile(
                             title: Text(
-                              chapters[i].name,
+                              reports[index].title,
                               style: Theme.of(context).textTheme.headline6,
-                            ),
-                            onTap: () {
-                              setState(() {
-                                report = data[index];
-                                itemScrollController.scrollTo(
-                                  index: i,
-                                  duration: const Duration(milliseconds: 500),
-                                );
-                                Navigator.of(context).pop();
-                              });
+                              textAlign: TextAlign.left,
+                            )
+                          ),
+                          Column(
+                            children: List.generate(chapters.length, (i) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      '${i + 1}.' + chapters[i].name,
+                                      // style: Theme.of(context).textTheme.headline1,
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        report = reports[index];
+                                        itemScrollController.scrollTo(
+                                          index: i + 1,
+                                          duration: const Duration(
+                                              milliseconds: 500),
+                                        );
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                  ),
+                                  // const Divider(
+                                  //   color: Color(0x2E0C1914),
+                                  //   thickness: 2,
+                                  // ),
+                                ],
+                              );
+                            }),
+                          )
+                        ]);
+                      })),
+                  body: ScrollablePositionedList.builder(
+                      itemCount: report!.chapters.length + 1,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MarkdownBody(
+                            data: (index > 0)
+                                ? report!.chapters[index - 1].text
+                                : '# **' + report!.title + '**',
+                            onTapLink: (text, url, title) {
+                              _launchURL(url!);
+                            },
+                            imageBuilder: (Uri uri, String? title, String? alt) {
+                              return Image.network(baseUrl + 'static/' + uri.toString());
                             },
                           ),
-                          const Divider(
-                            color: Color(0x2E0C1914),
-                            thickness: 2,
-                          ),
-                        ],
-                      );
-                    }
-                  ),
-                )
-              ]
-            );
+                        );
+                      },
+                      itemScrollController: itemScrollController),
+                );
+            }
+
+            throw Exception();
           }
-        )
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ScrollablePositionedList.builder(
-          itemCount: report.chapters.length,
-          itemBuilder: (context, index) {
-            return MarkdownBody(
-              data: report.chapters[index].text,
-              onTapLink: (text, url, title) {
-                _launchURL(url!);
-              },
-            );
-          },
-          itemScrollController: itemScrollController
-        ),
-      ),
+      }
     );
   }
 

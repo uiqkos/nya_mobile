@@ -8,12 +8,7 @@ class NyaCommentWidget extends StatelessWidget {
 
   const NyaCommentWidget({required this.comment, Key? key}) : super(key: key);
 
-  static Color floatColor(int grad) {
-    if (grad == 1) return Colors.blue;
-    if (grad == 0) return Colors.green;
-    if (grad == 2) return Colors.red;
-    return Colors.purple;
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +48,9 @@ class NyaCommentWidget extends StatelessWidget {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: comment.predictions.map<Widget>((e) => Tag(
-                        color: floatColor(e.grad),
-                        text: ' ' + e.label + ' ' + e.percent.toString() + ' '
-                      )).toList()
+                      children: comment.predictions.map<Widget>((e) => NyaTagWidget
+                          .fromGrad(e.grad, ' ' + e.label + ' ' + e.percent.toString() + ' ')
+                      ).toList()
                     ),
                     SizedBox(
                       width: 250,
@@ -76,15 +70,18 @@ class NyaCommentWidget extends StatelessWidget {
   }
 }
 
-class Tag extends StatelessWidget {
+class NyaTagWidget extends StatelessWidget {
   final Color color;
   final String text;
 
-  const Tag({
+  const NyaTagWidget({
     required this .color,
     required this .text,
     Key? key
   }) : super(key: key);
+
+  static NyaTagWidget fromGrad(int grad, String text)
+    => NyaTagWidget(color: _floatColor(grad), text: text);
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +98,13 @@ class Tag extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  static Color _floatColor(int grad) {
+    if (grad == 1) return Colors.blue;
+    if (grad == 0) return Colors.green;
+    if (grad == 2) return Colors.red;
+    return Colors.purple;
   }
 
 }
