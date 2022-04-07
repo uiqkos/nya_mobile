@@ -37,11 +37,6 @@ class NyaSettingsPage extends StatelessWidget {
                   hintText: 'URL сервера',
                   defaultValue: NyaPrefs.getInstance().getString('api_url')!,
                 ),
-                NyaStringSetting(
-                    name: 'server_url',
-                    displayName: 'URL сервера',
-                    hintText: 'URL'
-                ),
                 const Divider(
                   color: Color(0x2E0C1914),
                   thickness: 2,
