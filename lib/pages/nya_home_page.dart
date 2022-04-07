@@ -67,7 +67,7 @@ class _NyaHomePageState extends State<NyaHomePage> {
                 name: 'text',
                 displayName: 'Текст',
                 hintText: 'Текст',
-                defaultValue: 'https://vk.com/feed?w=wall-183293188_1025586',
+                defaultValue: '',
               ),
               const SizedBox(height: 20),
               FutureBuilder(
