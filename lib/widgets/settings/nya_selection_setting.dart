@@ -31,18 +31,22 @@ class _NyaSelectionSettingState extends State<NyaSelectionSetting> {
       padding: const EdgeInsets.all(8.0),
       child: NyaInfoLabel(
         name: widget.displayName,
-        child: DropdownButtonFormField(
-          items: widget.optionByKey.entries.map((entry) => DropdownMenuItem(
-            value: entry.key,
-            child: Text(entry.key),
-          )).toList(growable: false),
-          value: widget.keyByOption[NyaPrefs.getInstance().getString(widget.name)],
-          onChanged: (value) => setState(() {
-            if (value != null) {
-              NyaPrefs.getInstance().setString(
-                  widget.name, widget.optionByKey[value as String]!);
-            }
-          }),
+        child: Container(
+          height: 50,
+          child: DropdownButtonFormField(
+            icon: const Icon(Icons.keyboard_arrow_down_outlined),
+            items: widget.optionByKey.entries.map((entry) => DropdownMenuItem(
+              value: entry.key,
+              child: Text(entry.key),
+            )).toList(growable: false),
+            value: widget.keyByOption[NyaPrefs.getInstance().getString(widget.name)],
+            onChanged: (value) => setState(() {
+              if (value != null) {
+                NyaPrefs.getInstance().setString(
+                    widget.name, widget.optionByKey[value as String]!);
+              }
+            }),
+          ),
         ),
       ),
     );

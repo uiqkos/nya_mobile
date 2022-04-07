@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const _keyboardLayout = [
   '1234567890-=',
@@ -38,12 +39,12 @@ String _chooseCharAround(String char) {
 class NyaMissTypeWidget extends StatefulWidget {
   final String text;
   final Duration typeInterval;
-  final TextStyle textStyle;
+  final TextStyle initialTextStyle;
   
   const NyaMissTypeWidget({
     Key? key,
     required this.text,
-    required this.textStyle,
+    required this.initialTextStyle,
     required this.typeInterval,
   }) : super(key: key);
 
@@ -55,6 +56,7 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
   String typedText = "";
   bool lastInvalid = false;
   bool canMistake = false;
+  TextStyle? textStyle;
 
   @override
   void initState() {
@@ -67,21 +69,30 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
     
     if (typedText.length >= widget.text.length && !lastInvalid) {
       timer.cancel();
+      setState(() {
+        textStyle = widget.initialTextStyle.copyWith(
+          decoration: TextDecoration.underline,
+          decorationStyle: TextDecorationStyle.wavy,
+          decorationColor: Theme.of(context).primaryColor,
+          decorationThickness: 4
+        );
+      });
       return;
     }
 
     setState(() {
-      if (lastInvalid && !canMistake) {
+      if (lastInvalid) {
         typedText = typedText.substring(0, typedText.length - 1);
         lastInvalid = false;
       } else  {
         String nextChar = widget.text[typedText.length];
-        if (random.nextDouble() < 0.2 && canMistake) {
-          nextChar = _chooseCharAround(nextChar);
+        if (random.nextDouble() < 0.2) {
+          var char = nextChar;
+          while (char == nextChar) {
+            char = _chooseCharAround(nextChar);
+          }
           lastInvalid = true;
-          canMistake = false;
-        } else {
-          canMistake = true;
+          nextChar = char;
         }
         typedText += nextChar;
       }
@@ -93,7 +104,7 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
     return Text(
       typedText,
       textAlign: TextAlign.center,
-      style: widget.textStyle,
+      style: textStyle ?? widget.initialTextStyle,
     );
   }
 }

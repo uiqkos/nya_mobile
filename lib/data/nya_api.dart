@@ -127,8 +127,8 @@ class NyaChapter {
     required this .text
   });
 
-  static List<NyaChapter> fromText(String text) {
-    var chapters = text.split('\n# ');
+  static List<NyaChapter> fromText(String text, String title) {
+    var chapters = ('\n' + text).split('\n# ');
     chapters = chapters.sublist(1);
     return List.generate(
         chapters.length,
@@ -156,7 +156,7 @@ class NyaReport {
 
   static NyaReport fromJson(Map<String, dynamic> json) {
     return NyaReport(
-      chapters: NyaChapter.fromText(json['text']),
+      chapters: NyaChapter.fromText(json['text'], json['title']),
       name: json['name'],
       title: json['title'],
       tags: (json['tags'] as List)
