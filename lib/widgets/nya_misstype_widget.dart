@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -14,6 +13,10 @@ const _keyboardLayout = [
 
 String _chooseCharAround(String char) {
   int rowIndex = _keyboardLayout.indexWhere((row) => row.contains(char));
+  if (rowIndex == -1) {
+    return char;
+  }
+
   int colIndex = _keyboardLayout[rowIndex].indexOf(char);
 
   var random = Random();
@@ -53,6 +56,7 @@ class NyaMissTypeWidget extends StatefulWidget {
 }
 
 class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
+  late Timer typeTimer;
   String typedText = "";
   bool lastInvalid = false;
   bool canMistake = false;
@@ -61,7 +65,14 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(widget.typeInterval, typeNextChar);
+    typeTimer = Timer.periodic(widget.typeInterval, typeNextChar);
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    typeTimer.cancel();
   }
 
   void typeNextChar(Timer timer) async {

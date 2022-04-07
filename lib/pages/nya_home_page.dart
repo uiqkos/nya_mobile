@@ -29,7 +29,7 @@ class _NyaHomePageState extends State<NyaHomePage> {
   @override
   Widget build(BuildContext context) {
     var requestModel = context.watch<NyaPredictRequestModel>();
-    var sharedLink = context.select((NyaSharedLinkProvider provider) => provider.sharedLink);
+    var linkProvider = context.watch<NyaSharedLinkProvider>();
 
     return SingleChildScrollView(
         child: Padding(
@@ -51,30 +51,34 @@ class _NyaHomePageState extends State<NyaHomePage> {
                   ),
                 ),
               ),
-              NyaSelectionSetting(
-                name: 'input_method',
-                displayName: 'Социальная сеть',
-                optionByKey: const {
-                  'Определить автоматически': 'auto',
-                  'Youtube': 'youtube',
-                  'VK': 'vk'
-                },
-                defaultValue: 'Определить автоматически',
-              ),
-              NyaStringSetting(
-                key: Key(sharedLink ?? "null"),
-                overrideValue: sharedLink,
-                name: 'text',
-                displayName: 'Текст',
-                hintText: 'Текст',
-                defaultValue: '',
-              ),
-              const SizedBox(height: 20),
-              FutureBuilder(
+                NyaSelectionSetting(
+                  name: 'input_method',
+                  displayName: 'Социальная сеть',
+                  optionByKey: const {
+                    'Определить автоматически': 'auto',
+                    'Youtube': 'youtube',
+                    'VK': 'vk'
+                  },
+                  defaultValue: 'Определить автоматически',
+                ),
+                FutureBuilder<String?>(
+                  future: linkProvider.getSharedLink(),
+                  builder: (ctx, snapshot) {
+                    return NyaStringSetting(
+                      key: Key(snapshot.data ?? "null"),
+                      overrideValue: snapshot.data,
+                      name: 'text',
+                      displayName: 'Текст',
+                      hintText: 'Текст',
+                      defaultValue: 'https://vk.com/feed?w=wall-183293188_1025586',
+                    );
+                  },
+                ),
+               const SizedBox(height: 20),
+               FutureBuilder(
                 future: NyaCacherProvider.provide('models').getCache(
                     'models',
                     requestModel.getModels
-                ),
                 builder: (
                   BuildContext context,
                   AsyncSnapshot<List<NyaModel>> snapshot
