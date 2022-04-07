@@ -79,6 +79,7 @@ class _NyaHomePageState extends State<NyaHomePage> {
                 future: NyaCacherProvider.provide('models').getCache(
                     'models',
                     requestModel.getModels
+                ),
                 builder: (
                   BuildContext context,
                   AsyncSnapshot<List<NyaModel>> snapshot
@@ -146,8 +147,8 @@ class _NyaHomePageState extends State<NyaHomePage> {
                         return Column();
                       }
                   }
-              }
-            ),
+                }
+              ),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(8.0),
