@@ -5,11 +5,8 @@ import '../../data/nya_comment.dart';
 
 class NyaCommentWidget extends StatelessWidget {
   final NyaComment comment;
-  final List<NyaComment> comments;
 
-  const NyaCommentWidget(
-      {required this.comment, this.comments = const <NyaComment>[], Key? key})
-      : super(key: key);
+  const NyaCommentWidget({required this.comment, Key? key}) : super(key: key);
 
   static Color floatColor(int grad) {
     if (grad == 1) return Colors.blue;
@@ -38,8 +35,6 @@ class NyaCommentWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Row(
-                    //   children: [
                     Text(
                       comment.author.name + ' ',
                       style: const TextStyle(
@@ -49,22 +44,19 @@ class NyaCommentWidget extends StatelessWidget {
                     ),
                     Text(' '
                         + DateFormat('yyyy-MM-dd').format(comment.date)
-                        + ' at '
+                        + ' в '
                         + DateFormat('hh:mm').format(comment.date),
                       style: TextStyle(
                           color: Colors.grey[800],
                           fontWeight: FontWeight.bold
                       ),
                     ),
-                    //   ],
-                    // ),
                     Row(
-                        children: comment.predictions.map<Widget>((e) =>
-                                Tag(
-                                    color: floatColor(e.grad),
-                                    text: e.label + e.percent.toString()
-                                )
-                        ).toList()
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: comment.predictions.map<Widget>((e) => Tag(
+                        color: floatColor(e.grad),
+                        text: ' ' + e.label + ' ' + e.percent.toString() + ' '
+                      )).toList()
                     ),
                     SizedBox(
                       width: 250,
@@ -96,14 +88,17 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(color: color),
-          borderRadius: BorderRadius.circular(4)
-      ),
-      child: Text(
-        text,
-        style: TextStyle(color: color),
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: color),
+            borderRadius: BorderRadius.circular(4)
+        ),
+        child: Text(
+          text,
+          style: TextStyle(color: color),
+        ),
       ),
     );
   }

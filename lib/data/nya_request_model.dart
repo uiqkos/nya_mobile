@@ -8,7 +8,7 @@ class NyaPredictRequestModel extends ChangeNotifier {
   static late final NyaApi api;
   NyaPredictRequest? request;
   Map<String, int> pageByPath = {};
-  List<NyaComment> comments = [];
+  NyaComment? rootComment;
 
   bool get isEmpty {
     return request == null;
@@ -16,7 +16,7 @@ class NyaPredictRequestModel extends ChangeNotifier {
 
   void clear() {
     request = null;
-    comments = [];
+    rootComment = null;
     pageByPath.clear();
   }
 
@@ -40,39 +40,32 @@ class NyaPredictRequestModel extends ChangeNotifier {
     return await api.models();
   }
 
-  Future<List<NyaComment>?> getComments() async {
+  Future<NyaComment?> getComments() async {
     if (request == null) return null;
 
     var response = await api.predictRequest(request!);
 
-    var insertIndex = 0;
     var path = List.from(response.path);
+    var currentComment = rootComment;
+
+    if (path.isEmpty) {
+      rootComment = response.items.first;
+      return rootComment;
+    }
 
     while (path.isNotEmpty) {
       var parentId = path.removeAt(0);
 
-      while (
-        insertIndex < comments.length &&
-        comments.elementAt(insertIndex).id != parentId
-      ) {
-        insertIndex += 1;
+      for (var comment in currentComment!.comments) {
+        if (comment.id == parentId) {
+          currentComment = comment;
+          break;
+        }
       }
     }
 
-    if (insertIndex < comments.length) {
-      var level = comments.elementAt(insertIndex).level + 1;
+    currentComment!.comments.addAll(response.items);
 
-      insertIndex = comments.indexWhere(
-          (element) => element.level < level,
-          insertIndex + 1
-      );
-      if (insertIndex == -1) {
-        insertIndex = comments.length;
-      }
-    }
-
-    comments.insertAll(insertIndex, response.items);
-
-    return comments;
+    return rootComment;
   }
 }

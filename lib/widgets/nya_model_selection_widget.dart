@@ -28,8 +28,6 @@ class _NyaModelSelectionState extends State<NyaModelSelection> {
 
   @override
   Widget build(BuildContext context) {
-    var requestModel = context.watch<NyaPredictRequestModel>();
-
     return NyaSettingsGroup(
       displayName: widget.displayName,
       children: widget
@@ -43,9 +41,13 @@ class _NyaModelSelectionState extends State<NyaModelSelection> {
               activeColor: Theme.of(context).iconTheme.color,
               toggleable: true,
               value: model.name,
-              groupValue: NyaPrefs.instance.getString(model.target),
+              groupValue: NyaPrefs.getInstance().getString(model.target),
               onChanged: (String? value) => setState(() {
-                NyaPrefs.instance.setString(model.target, model.name);
+                if (value == null) {
+                  NyaPrefs.getInstance().remove(model.target);
+                } else {
+                  NyaPrefs.getInstance().setString(model.target, model.name);
+                }
               })
             ),
           )

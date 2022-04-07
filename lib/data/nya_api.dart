@@ -73,6 +73,10 @@ class NyaApi {
     return (await _getJson('reports') as List)
         .map((e) => NyaReport.fromJson(e)).toList();
   }
+
+  Future<NyaReport> reportById(String id) async {
+    return NyaReport.fromJson(await _getJson('reports/' + id));
+  }
 }
 
 class NyaModel {

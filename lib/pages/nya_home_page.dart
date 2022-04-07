@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nya_mobile/data/nya_caching.dart';
+import 'package:nya_mobile/data/nya_shared_link_provider.dart';
 import 'package:nya_mobile/widgets/settings/nya_selection_setting.dart';
 import 'package:nya_mobile/widgets/settings/nya_string_setting.dart';
 import 'package:nya_mobile/data/nya_predict_request.dart';
 import 'package:nya_mobile/data/nya_request_model.dart';
 import 'package:provider/provider.dart';
-import 'package:nya_mobile/main.dart';
 
 import '../data/nya_api.dart';
 import '../prefs/nya_prefs.dart';
@@ -29,119 +29,117 @@ class _NyaHomePageState extends State<NyaHomePage> {
   @override
   Widget build(BuildContext context) {
     var requestModel = context.watch<NyaPredictRequestModel>();
+    var sharedLink = context.select((NyaSharedLinkProvider provider) => provider.sharedLink);
 
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-               padding: EdgeInsets.all(32),
-               child: SizedBox(
-                 height: 100,
-                 child: NyaMissTypeWidget(
-                   text: 'Nyaural Nyatworks',
-                   textStyle: TextStyle(
-                     fontFamily: 'ElectroHarmonix',
-                     fontSize: 40,
-                   ),
-                   typeInterval: Duration(milliseconds: 300),
-                 ),
-               ),
-            ),
-            NyaSelectionSetting(
-              name: 'input_method',
-              displayName: 'Социальная сеть',
-              optionByKey: const {
-                'Определить автоматически': 'auto',
-                'Youtube': 'youtube',
-                'VK': 'vk'
-              },
-              defaultValue: 'Определить автоматически',
-            ),
-            FutureBuilder<String?>(
-              future: getSharedLink(),
-              builder: (ctx, snapshot) {
-                return NyaStringSetting(
-                  key: Key(snapshot.hasData.toString()),
-                  overrideValue: snapshot.data,
+    return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(32),
+                  child: SizedBox(
+                    height: 100,
+                    child: NyaMissTypeWidget(
+                      text: 'Nyaural Nyatworks',
+                      textStyle: TextStyle(
+                        fontFamily: 'ElectroHarmonix',
+                        fontSize: 40,
+                      ),
+                      typeInterval: Duration(milliseconds: 300),
+                    ),
+                  ),
+                ),
+                NyaSelectionSetting(
+                  name: 'input_method',
+                  displayName: 'Социальная сеть',
+                  optionByKey: const {
+                    'Определить автоматически': 'auto',
+                    'Youtube': 'youtube',
+                    'VK': 'vk'
+                  },
+                  defaultValue: 'Определить автоматически',
+                ),
+                NyaStringSetting(
+                  key: Key(sharedLink ?? "null"),
+                  overrideValue: sharedLink,
                   name: 'text',
                   displayName: 'Текст',
                   hintText: 'Текст',
                   defaultValue: 'https://vk.com/feed?w=wall-183293188_1025586',
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            FutureBuilder(
-              future: NyaCacherProvider.provide('models').getCache(
-                  'models',
-                  requestModel.getModels
-              ),
-              builder: (
-                BuildContext context,
-                AsyncSnapshot<List<NyaModel>> snapshot
-              ) {
-                switch(snapshot.connectionState){
-                  case ConnectionState.none:
-                    return const Text('Empty');
+                ),
+                const SizedBox(height: 20),
+                FutureBuilder(
+                  future: NyaCacherProvider.provide('models').getCache(
+                      'models',
+                      requestModel.getModels
+                  ),
+                  builder: (
+                    BuildContext context,
+                    AsyncSnapshot<List<NyaModel>> snapshot
+                  ) {
+                    switch(snapshot.connectionState){
+                      case ConnectionState.none:
+                        return const Text('Empty');
 
-                  case ConnectionState.waiting:
-                    return const Text('Awaiting result...');
+                      case ConnectionState.waiting:
+                        return const Image(
+                            image: AssetImage('assets/images/catloading.gif'));
 
-                  default:
-                    if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
+                      default:
+                        if (snapshot.hasError) {
+                          return Text(snapshot.error.toString());
 
-                    } else if (snapshot.hasData) {
-                      var models = snapshot.data!;
+                        } else if (snapshot.hasData) {
+                          var models = snapshot.data!;
 
-                      NyaPrefs.instance.setStringList(
-                          'targets',
-                          models
-                              .map((e) => e.target)
-                              .toSet()
+                          NyaPrefs.getInstance().setStringList(
+                              'targets',
+                              models
+                                  .map((e) => e.target)
+                                  .toSet()
+                                  .toList()
+                          );
+
+                          var modelsByTarget = models
+                            .fold(
+                              <String, List<NyaModel>>{},
+                              (Map<String, List<NyaModel>> previousValue, element) {
+                                if (!previousValue.containsKey(element.target)){
+                                  previousValue[element.target] = [];
+                                }
+                                previousValue[element.target]!.add(element);
+                                return previousValue;
+                              }
+                            );
+
+                          return Column(
+                            children: modelsByTarget
+                              .entries
+                              .map((entry) {
+                                return [
+                                  const Divider(
+                                    color: Color(0x2E0C1914),
+                                    thickness: 2,
+                                  ),
+                                  NyaModelSelection(
+                                    displayName: _translate[entry.key]!,
+                                    name: entry.key,
+                                    models: entry.value,
+                                  )
+                                ];
+                              })
+                              .expand((element) => element)
                               .toList()
-                      );
-
-                      var modelsByTarget = models
-                        .fold(
-                          <String, List<NyaModel>>{},
-                          (Map<String, List<NyaModel>> previousValue, element) {
-                            if (!previousValue.containsKey(element.target)){
-                              previousValue[element.target] = [];
-                            }
-                            previousValue[element.target]!.add(element);
-                            return previousValue;
-                          }
-                        );
-
-                      return Column(
-                        children: modelsByTarget
-                          .entries
-                          .map((entry) {
-                            return [
-                              const Divider(
+                              ..add(const Divider(
                                 color: Color(0x2E0C1914),
                                 thickness: 2,
-                              ),
-                              NyaModelSelection(
-                                displayName: _translate[entry.key]!,
-                                name: entry.key,
-                                models: entry.value,
-                              )
-                            ];
-                          })
-                          .expand((element) => element)
-                          .toList()
-                          ..add(const Divider(
-                            color: Color(0x2E0C1914),
-                            thickness: 2,
-                          ))
-                      );
-                    } else {
-                      return Column();
+                              ))
+                          );
+                        } else {
+                          return Column();
+                        }
                     }
                 }
               },
@@ -189,7 +187,6 @@ class _NyaHomePageState extends State<NyaHomePage> {
 
           ],
         ),
-      ),
     );
   }
 }
