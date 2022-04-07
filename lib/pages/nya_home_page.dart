@@ -142,8 +142,7 @@ class _NyaHomePageState extends State<NyaHomePage> {
                         }
                     }
                 }
-              },
-            ),
+              ),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -164,17 +163,17 @@ class _NyaHomePageState extends State<NyaHomePage> {
 
                     requestModel.clear();
                     requestModel.request = NyaPredictRequest(
-                      text: NyaPrefs.instance.getString('text')!,
-                      inputMethod: NyaPrefs.instance.getString('input_method')!,
+                      text: NyaPrefs.getInstance().getString('text')!,
+                      inputMethod: NyaPrefs.getInstance().getString('input_method')!,
                       perPage: 3,
                       page: 1
                     );
 
                     NyaPrefs
-                      .instance
+                      .getInstance()
                       .getStringList('targets')
                       ?.forEach((target) {
-                        var modelName = NyaPrefs.instance.getString(target);
+                        var modelName = NyaPrefs.getInstance().getString(target);
                         if (modelName != null) {
                           requestModel.request!.models[target] = modelName;
                         }
@@ -184,9 +183,9 @@ class _NyaHomePageState extends State<NyaHomePage> {
                 ),
               ),
             )
-
           ],
-        ),
+        )
+      )
     );
   }
 }
