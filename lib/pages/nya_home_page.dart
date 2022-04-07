@@ -29,7 +29,7 @@ class _NyaHomePageState extends State<NyaHomePage> {
   @override
   Widget build(BuildContext context) {
     var requestModel = context.watch<NyaPredictRequestModel>();
-    var sharedLink = context.select((NyaSharedLinkProvider provider) => provider.sharedLink);
+    var linkProvider = context.watch<NyaSharedLinkProvider>();
 
     return SingleChildScrollView(
         child: Padding(
@@ -61,13 +61,18 @@ class _NyaHomePageState extends State<NyaHomePage> {
                   },
                   defaultValue: 'Определить автоматически',
                 ),
-                NyaStringSetting(
-                  key: Key(sharedLink ?? "null"),
-                  overrideValue: sharedLink,
-                  name: 'text',
-                  displayName: 'Текст',
-                  hintText: 'Текст',
-                  defaultValue: 'https://vk.com/feed?w=wall-183293188_1025586',
+                FutureBuilder<String?>(
+                  future: linkProvider.getSharedLink(),
+                  builder: (ctx, snapshot) {
+                    return NyaStringSetting(
+                      key: Key(snapshot.data ?? "null"),
+                      overrideValue: snapshot.data,
+                      name: 'text',
+                      displayName: 'Текст',
+                      hintText: 'Текст',
+                      defaultValue: 'https://vk.com/feed?w=wall-183293188_1025586',
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
                 FutureBuilder(
