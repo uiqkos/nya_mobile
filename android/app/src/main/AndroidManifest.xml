@@ -2,7 +2,7 @@
     package="ru.nya.nya_mobile">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="nya_mobile"
+        android:label="Nyaural Nyatworks"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

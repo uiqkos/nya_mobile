@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 const _keyboardLayout = [
   '1234567890-=',
@@ -11,10 +10,10 @@ const _keyboardLayout = [
   'zxcvbnm',
 ];
 
-String _chooseCharAround(String char) {
+String? _chooseCharAround(String char) {
   int rowIndex = _keyboardLayout.indexWhere((row) => row.contains(char));
   if (rowIndex == -1) {
-    return char;
+    return null;
   }
 
   int colIndex = _keyboardLayout[rowIndex].indexOf(char);
@@ -68,7 +67,6 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
     typeTimer = Timer.periodic(widget.typeInterval, typeNextChar);
   }
 
-
   @override
   void dispose() {
     super.dispose();
@@ -96,14 +94,16 @@ class _NyaMissTypeWidgetState extends State<NyaMissTypeWidget> {
         typedText = typedText.substring(0, typedText.length - 1);
         lastInvalid = false;
       } else  {
-        String nextChar = widget.text[typedText.length];
+        var nextChar = widget.text[typedText.length];
         if (random.nextDouble() < 0.2) {
-          var char = nextChar;
+          String? char = nextChar;
           while (char == nextChar) {
             char = _chooseCharAround(nextChar);
           }
           lastInvalid = true;
-          nextChar = char;
+          if (char != null) {
+            nextChar = char;
+          }
         }
         typedText += nextChar;
       }
