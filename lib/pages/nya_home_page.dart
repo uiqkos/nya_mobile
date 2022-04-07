@@ -141,48 +141,51 @@ class _NyaHomePageState extends State<NyaHomePage> {
                           return Column();
                         }
                     }
+                }
+              },
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: TextButton(
+                  child: const Text(
+                    'Провести анализ',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  onPressed: () {
+                    NyaCacherProvider
+                        .provide('request')
+                        .invalidateAll();
+
+                    requestModel.clear();
+                    requestModel.request = NyaPredictRequest(
+                      text: NyaPrefs.instance.getString('text')!,
+                      inputMethod: NyaPrefs.instance.getString('input_method')!,
+                      perPage: 3,
+                      page: 1
+                    );
+
+                    NyaPrefs
+                      .instance
+                      .getStringList('targets')
+                      ?.forEach((target) {
+                        var modelName = NyaPrefs.instance.getString(target);
+                        if (modelName != null) {
+                          requestModel.request!.models[target] = modelName;
+                        }
+                      });
+
                   },
                 ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: TextButton(
-                    child: const Text(
-                      'Провести анализ',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    onPressed: () {
-                      NyaCacherProvider
-                          .provide('request')
-                          .invalidateAll();
+              ),
+            )
 
-                      requestModel.clear();
-                      requestModel.request = NyaPredictRequest(
-                        text: NyaPrefs.getInstance().getString('text')!,
-                        inputMethod: NyaPrefs.getInstance().getString('input_method')!,
-                        perPage: 3,
-                        page: 1
-                      );
-
-                      NyaPrefs
-                        .getInstance()
-                        .getStringList('targets')
-                        ?.forEach((target) {
-                          var modelName = NyaPrefs.getInstance().getString(target);
-                          if (modelName != null) {
-                            requestModel.request!.models[target] = modelName;
-                          }
-                        });
-
-                    },
-                  ),
-                )
-
-              ],
-            ),
+          ],
         ),
     );
   }

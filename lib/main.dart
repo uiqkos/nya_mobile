@@ -77,6 +77,11 @@ class _NyaApp extends StatelessWidget {
             fontSize: 30,
             color: Color(0xff2e0c19),
           ),
+          headline1: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 12,
+            color: Colors.grey,
+          ),
           headline6: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
