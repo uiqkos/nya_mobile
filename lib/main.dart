@@ -23,12 +23,6 @@ void main() async {
   ));
 }
 
-class SharedLink {
-  final String? value;
-
-  SharedLink(this.value);
-}
-
 class _NyaApp extends StatelessWidget {
   const _NyaApp({Key? key}) : super(key: key);
 
